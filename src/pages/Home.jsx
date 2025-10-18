@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "wouter";
 import { CheckSquare, Users, BarChart3, Shield } from "lucide-react";
 
@@ -25,7 +24,7 @@ const Home = () => {
             <h3 className="text-xl font-bold text-gray-800 mb-2">
               Organización
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-800">
               Organiza tus tareas en tableros visuales e intuitivos
             </p>
           </div>
@@ -35,7 +34,7 @@ const Home = () => {
             <h3 className="text-xl font-bold text-gray-800 mb-2">
               Colaboración
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-800">
               Trabaja en equipo y asigna tareas a diferentes miembros
             </p>
           </div>
@@ -45,7 +44,7 @@ const Home = () => {
             <h3 className="text-xl font-bold text-gray-800 mb-2">
               Estadísticas
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-800">
               Visualiza el progreso de tus proyectos con métricas claras
             </p>
           </div>
@@ -53,28 +52,28 @@ const Home = () => {
           <div className="bg-white rounded-lg p-6 shadow-lg">
             <Shield className="w-12 h-12 text-red-500 mb-4" />
             <h3 className="text-xl font-bold text-gray-800 mb-2">Seguridad</h3>
-            <p className="text-gray-600">
+            <p className="text-gray-800">
               Autenticación segura con roles y permisos diferenciados
             </p>
           </div>
         </div>
 
         <div className="mt-16 bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Características Principales
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-800">
             <ul className="space-y-2">
-              <li>✅ Sistema de autenticación con JWT</li>
-              <li>✅ Gestión de tableros y listas</li>
-              <li>✅ Creación y edición de tarjetas</li>
-              <li>✅ Asignación de tareas a usuarios</li>
+              <li>Sistema de autenticación con JWT</li>
+              <li>Gestión de tableros y listas</li>
+              <li>Creación y edición de tarjetas</li>
+              <li>Asignación de tareas a usuarios</li>
             </ul>
             <ul className="space-y-2">
-              <li>✅ Prioridades y fechas de vencimiento</li>
-              <li>✅ Búsqueda y filtrado avanzado</li>
-              <li>✅ Panel de administración con gráficos</li>
-              <li>✅ Interfaz responsive y moderna</li>
+              <li>Prioridades y fechas de vencimiento</li>
+              <li>Búsqueda y filtrado avanzado</li>
+              <li>Panel de administración con gráficos</li>
+              <li>Interfaz responsive y moderna</li>
             </ul>
           </div>
         </div>
