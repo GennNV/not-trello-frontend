@@ -11,10 +11,11 @@ const Home = () => {
           <p className="text-xl mb-8">
             Gestiona tus proyectos de forma eficiente y colaborativa
           </p>
-          <Link href="/login">
-            <a className="inline-block px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg">
-              Comenzar Ahora
-            </a>
+          <Link
+            href="/login"
+            className="inline-block px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition shadow-lg"
+          >
+            Comenzar Ahora
           </Link>
         </div>
 
