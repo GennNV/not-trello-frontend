@@ -18,4 +18,22 @@ export const tablerosService = {
       throw error.response?.data?.message || "Error al obtener tablero";
     }
   },
+
+  async create(data) {
+    try {
+      const response = await api.post("/tableros", data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data?.message || "Error al crear tablero";
+    }
+  },
+
+  async createLista(tableroId, data) {
+    try {
+      const response = await api.post(`/tableros/${tableroId}/listas`, data);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data?.message || "Error al crear lista";
+    }
+  },
 };

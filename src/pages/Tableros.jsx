@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { tablerosService } from "../services/tablerosService";
 import { useTarjetasStore } from "../store/tarjetasStore";
+import { useAuthStore } from "../store/authStore";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TarjetaCard from "../components/TarjetaCard";
+import Modal from "../components/Modal";
+import TableroForm from "../components/TableroForm";
 import { Search, Plus, Filter } from "lucide-react";
 
 const Tableros = () => {
@@ -15,7 +18,12 @@ const Tableros = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [estadoFilter, setEstadoFilter] = useState("");
 
+  // Estados para el modal de crear tablero
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [creatingTablero, setCreatingTablero] = useState(false);
+
   const { tarjetas, setTarjetas } = useTarjetasStore();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     loadTableros();
@@ -36,6 +44,19 @@ const Tableros = () => {
       setError(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateTablero = async (data) => {
+    try {
+      setCreatingTablero(true);
+      await tablerosService.create(data);
+      setIsModalOpen(false);
+      await loadTableros();
+    } catch (err) {
+      setError(err);
+    } finally {
+      setCreatingTablero(false);
     }
   };
 
@@ -67,6 +88,15 @@ const Tableros = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-gray-800">Mis Tableros</h1>
+        {user?.rol === "Admin" && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Nuevo Tablero
+          </button>
+        )}
       </div>
 
       {/* Barra de búsqueda y filtros */}
@@ -168,6 +198,19 @@ const Tableros = () => {
           </p>
         </div>
       )}
+
+      {/* Modal para crear tablero */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Crear Nuevo Tablero"
+      >
+        <TableroForm
+          onSubmit={handleCreateTablero}
+          onCancel={() => setIsModalOpen(false)}
+          loading={creatingTablero}
+        />
+      </Modal>
     </div>
   );
 };
