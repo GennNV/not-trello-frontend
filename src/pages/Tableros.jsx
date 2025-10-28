@@ -7,7 +7,14 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import TarjetaCard from "../components/TarjetaCard";
 import Modal from "../components/Modal";
 import TableroForm from "../components/TableroForm";
-import { Search, Plus, Filter } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Filter,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 
 const Tableros = () => {
   const [tableros, setTableros] = useState([]);
@@ -17,6 +24,7 @@ const Tableros = () => {
   // Estados locales para búsqueda y filtro
   const [searchTerm, setSearchTerm] = useState("");
   const [estadoFilter, setEstadoFilter] = useState("");
+  const [sortOrder, setSortOrder] = useState(null); // null, 'asc', 'desc'
 
   // Estados para el modal de crear tablero
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,17 +68,41 @@ const Tableros = () => {
     }
   };
 
-  // Filtrado de tarjetas basado en búsqueda y estado
-  const tarjetasFiltradas = tarjetas.filter((tarjeta) => {
-    const matchSearch =
-      searchTerm === "" ||
-      tarjeta.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tarjeta.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
+  const toggleSortOrder = () => {
+    if (sortOrder === null) {
+      setSortOrder("asc");
+    } else if (sortOrder === "asc") {
+      setSortOrder("desc");
+    } else {
+      setSortOrder(null);
+    }
+  };
 
-    const matchEstado = estadoFilter === "" || tarjeta.estado === estadoFilter;
+  // Filtrado y ordenamiento de tarjetas
+  const tarjetasFiltradas = tarjetas
+    .filter((tarjeta) => {
+      const matchSearch =
+        searchTerm === "" ||
+        tarjeta.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tarjeta.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return matchSearch && matchEstado;
-  });
+      const matchEstado =
+        estadoFilter === "" || tarjeta.estado === estadoFilter;
+
+      return matchSearch && matchEstado;
+    })
+    .sort((a, b) => {
+      if (sortOrder === null) return 0;
+
+      const dateA = new Date(a.fechaCreacion);
+      const dateB = new Date(b.fechaCreacion);
+
+      if (sortOrder === "asc") {
+        return dateA - dateB;
+      } else {
+        return dateB - dateA;
+      }
+    });
 
   if (loading) return <LoadingSpinner message="Cargando tableros..." />;
 
@@ -116,7 +148,7 @@ const Tableros = () => {
           </div>
 
           <div>
-            <div className="relative">
+            {/* <div className="relative">
               <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <select
                 value={estadoFilter}
@@ -128,7 +160,7 @@ const Tableros = () => {
                 <option value="InProgress">En Progreso</option>
                 <option value="Done">Completado</option>
               </select>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -178,11 +210,61 @@ const Tableros = () => {
       {/* Lista de tarjetas filtradas */}
       {tarjetasFiltradas.length > 0 && (
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            {searchTerm || estadoFilter
-              ? "Resultados de búsqueda"
-              : "Todas las Tarjetas"}
-          </h2>
+          <section className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              {searchTerm || estadoFilter
+                ? "Resultados de búsqueda"
+                : "Todas las Tarjetas"}
+            </h2>
+            <div className="flex items-center gap-3">
+              {/* Botón de ordenamiento por fecha */}
+              <button
+                onClick={toggleSortOrder}
+                className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition ${
+                  sortOrder
+                    ? "bg-blue-50 border-blue-500 text-blue-700"
+                    : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                }`}
+                title={
+                  sortOrder === "asc"
+                    ? "Ordenar por fecha: Más antiguos primero"
+                    : sortOrder === "desc"
+                    ? "Ordenar por fecha: Más recientes primero"
+                    : "Ordenar por fecha"
+                }
+              >
+                {sortOrder === "asc" ? (
+                  <ArrowUp className="w-5 h-5" />
+                ) : sortOrder === "desc" ? (
+                  <ArrowDown className="w-5 h-5" />
+                ) : (
+                  <ArrowUpDown className="w-5 h-5" />
+                )}
+                <span className="text-sm font-medium">
+                  {sortOrder === "asc"
+                    ? "Más antiguos"
+                    : sortOrder === "desc"
+                    ? "Más recientes"
+                    : "Ordenar por fecha"}
+                </span>
+              </button>
+
+              {/* Filtro de estado */}
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <select
+                  value={estadoFilter}
+                  onChange={(e) => setEstadoFilter(e.target.value)}
+                  className="w-50 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                >
+                  <option value="">Todos los estados</option>
+                  <option value="Todo">Por Hacer</option>
+                  <option value="InProgress">En Progreso</option>
+                  <option value="Done">Completado</option>
+                </select>
+              </div>
+            </div>
+          </section>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {tarjetasFiltradas.map((tarjeta) => (
               <TarjetaCard key={tarjeta.id} tarjeta={tarjeta} />
