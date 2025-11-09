@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuthStore } from "../store/authStore";
 import { authService } from "../services/authService";
 import { loginSchema } from "../schemas/loginSchema";
@@ -123,7 +123,17 @@ const Login = () => {
             )}
           </button>
         </form>
-
+            <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600">
+            ¿No tienes una cuenta?{" "}
+            <button
+              onClick={() => setLocation("/register")}
+              className="text-blue-600 font-semibold hover:underline"
+            >
+              Regístrate
+            </button>
+          </p>
+        </div>
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
           <p className="text-sm text-gray-600 font-semibold mb-2">
             Credenciales de prueba:

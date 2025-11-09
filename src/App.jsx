@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Tableros from "./pages/Tableros";
 import TarjetaForm from "./pages/TarjetaForm";
@@ -26,6 +27,11 @@ function App() {
           {/* Ruta pública */}
           <Route path="/login">
             {isAuthenticated ? <Redirect to="/tableros" /> : <Login />}
+          </Route>
+
+          {/* Ruta pública */}
+          <Route path="/register">
+            {isAuthenticated ? <Redirect to="/tableros" /> : <Register />}
           </Route>
 
           {/* Ruta home */}
