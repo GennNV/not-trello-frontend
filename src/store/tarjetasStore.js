@@ -5,6 +5,7 @@ export const useTarjetasStore = create((set) => ({
   filtros: {
     search: "",
     estado: "",
+    fechaOrden: "",
   },
   loading: false,
   error: null,

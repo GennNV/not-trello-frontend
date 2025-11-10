@@ -41,29 +41,41 @@ const TarjetaCard = ({ tarjeta }) => {
           </p>
         )}
 
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center space-x-3">
-            {tarjeta.fechaVencimiento && (
-              <div
-                className={`flex items-center space-x-1 ${
-                  isVencida ? "text-red-600" : ""
-                }`}
-              >
-                <Calendar className="w-3 h-3" />
-                <span>
-                  {new Date(tarjeta.fechaVencimiento).toLocaleDateString()}
-                </span>
-                {isVencida && <AlertCircle className="w-3 h-3" />}
-              </div>
-            )}
+        <div className="flex flex-col space-y-2 text-xs text-gray-500">
+          {/* Fecha de creación */}
+          {tarjeta.fechaCreacion && (
+            <div className="flex items-center space-x-1">
+              <Calendar className="w-3 h-3" />
+              <span className="font-medium">Creación:</span>
+              <span>
+                {new Date(tarjeta.fechaCreacion).toLocaleDateString()}
+              </span>
+            </div>
+          )}
 
-            {tarjeta.nombreAsignado && (
-              <div className="flex items-center space-x-1">
-                <User className="w-3 h-3" />
-                <span>{tarjeta.nombreAsignado}</span>
-              </div>
-            )}
-          </div>
+          {/* Fecha de vencimiento */}
+          {tarjeta.fechaVencimiento && (
+            <div
+              className={`flex items-center space-x-1 ${
+                isVencida ? "text-red-600" : ""
+              }`}
+            >
+              <Calendar className="w-3 h-3" />
+              <span className="font-medium">Vencimiento:</span>
+              <span>
+                {new Date(tarjeta.fechaVencimiento).toLocaleDateString()}
+              </span>
+              {isVencida && <AlertCircle className="w-3 h-3" />}
+            </div>
+          )}
+
+          {/* Usuario asignado */}
+          {tarjeta.nombreAsignado && (
+            <div className="flex items-center space-x-1">
+              <User className="w-3 h-3" />
+              <span>{tarjeta.nombreAsignado}</span>
+            </div>
+          )}
         </div>
 
         <div className="mt-2 pt-2 border-t border-gray-100">
