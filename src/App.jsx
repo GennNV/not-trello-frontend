@@ -16,7 +16,7 @@ const TableroDetalle = lazy(() => import("./pages/TableroDetalle"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 
 function App() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, login } = useAuthStore();
 
   React.useEffect(() => {
     const token = localStorage.getItem("token");
