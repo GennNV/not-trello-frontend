@@ -9,6 +9,11 @@ export const useAuthStore = create(
       isAuthenticated: false,
 
       login: (user, token) => {
+        console.log("=== LOGIN STORE ===");
+        console.log("User:", user);
+        console.log("Token:", token);
+        console.log("==================");
+
         set({
           user,
           token,

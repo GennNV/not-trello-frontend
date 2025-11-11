@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation } from "wouter";
-import {registerService } from "../services/registerServices"
+import { registerService } from "../services/registerServices";
 import { registerSchema } from "../schemas/registerSchema";
 import { UserPlus, AlertCircle, Eye, EyeOff } from "lucide-react";
 
@@ -29,9 +29,10 @@ const Register = () => {
       const response = await registerService.register(
         data.email,
         data.username,
-        data.password
+        data.password,
+        data.confirmPassword
       );
-      
+
       // Redirigir al login después del registro exitoso
       setLocation("/login");
     } catch (err) {

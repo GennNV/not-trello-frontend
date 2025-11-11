@@ -29,6 +29,17 @@ const TableroDetalle = () => {
     try {
       setLoading(true);
       const data = await tablerosService.getById(id);
+
+      // 🔍 DEBUG
+      console.log("=== TABLERO CARGADO ===");
+      console.log("Tablero completo:", data);
+      console.log("Tiene listas?:", data.listas);
+      console.log("Cantidad de listas:", data.listas?.length);
+      if (data.listas?.length > 0) {
+        console.log("Primera lista:", data.listas[0]);
+        console.log("Tarjetas de primera lista:", data.listas[0].tarjetas);
+      }
+      console.log("=====================");
       setTablero(data);
     } catch (err) {
       setError(err);

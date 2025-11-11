@@ -16,7 +16,14 @@ const TableroDetalle = lazy(() => import("./pages/TableroDetalle"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 
 function App() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, login } = useAuthStore();
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      login(JSON.parse(user), token);
+    }
+  }, [login]);
 
   return (
     <div className="min-h-screen bg-gray-50">

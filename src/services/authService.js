@@ -4,7 +4,13 @@ export const authService = {
   async login(email, password) {
     try {
       const response = await api.post("/auth/login", { email, password });
-      return response.data;
+      console.log("Response completa:", response.data);
+
+
+      return {
+        token: response.data.data.token,
+        user: response.data.data.usuario
+      };
     } catch (error) {
       throw error.response?.data?.message || "Error al iniciar sesión";
     }
@@ -13,7 +19,8 @@ export const authService = {
   async getCurrentUser() {
     try {
       const response = await api.get("/auth/me");
-      return response.data;
+      // Si /me también devuelve { message, data }
+      return response.data.data || response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al obtener usuario";
     }
