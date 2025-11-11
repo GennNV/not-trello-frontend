@@ -4,6 +4,7 @@ export const tablerosService = {
   async getAll() {
     try {
       const response = await api.get("/tableros");
+      
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al obtener tableros";
@@ -13,6 +14,7 @@ export const tablerosService = {
   async getById(id) {
     try {
       const response = await api.get(`/tableros/${id}`);
+      console.log(response.data)
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al obtener tablero";
