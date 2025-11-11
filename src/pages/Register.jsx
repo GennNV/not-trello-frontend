@@ -26,10 +26,11 @@ const Register = () => {
     setError("");
 
     try {
-      const response = await registerService.register(
+      await registerService.register(
         data.email,
         data.username,
-        data.password
+        data.password,
+        data.confirmPassword
       );
       
       // Redirigir al login después del registro exitoso

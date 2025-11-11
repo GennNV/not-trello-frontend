@@ -1,7 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const registerService = {
-  register: async (email, username, password) => {
+  register: async (email, username, password, confirmPassword) => {
     try {
       const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
@@ -12,16 +12,15 @@ export const registerService = {
           email,
           username,
           password,
+          confirmPassword
         }),
       });
-
       const data = await response.json();
 
       if (!response.ok) {
         throw data.message || "Error al registrarse";
       }
 
-      return data;
     } catch (error) {
       if (error instanceof Error) {
         throw error.message;
