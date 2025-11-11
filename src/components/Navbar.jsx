@@ -18,35 +18,31 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
-            <Link href="/">
-              <a className="flex items-center space-x-2 text-xl font-bold">
-                <LayoutDashboard className="w-6 h-6" />
-                <span>TrelloClone</span>
-              </a>
+            <Link href="/" className="flex items-center space-x-2 text-xl font-bold">
+              <LayoutDashboard className="w-6 h-6" />
+              <span>TrelloClone</span>
             </Link>
 
             <div className="flex space-x-4">
-              <Link href="/tableros">
-                <a
-                  className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition ${
-                    location === "/tableros" ? "bg-blue-700" : ""
-                  }`}
-                >
-                  <ListTodo className="w-4 h-4" />
-                  <span>Tableros</span>
-                </a>
+              <Link 
+                href="/tableros"
+                className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition ${
+                  location === "/tableros" ? "bg-blue-700" : ""
+                }`}
+              >
+                <ListTodo className="w-4 h-4" />
+                <span>Tableros</span>
               </Link>
 
               {user?.rol === "Admin" && (
-                <Link href="/admin">
-                  <a
-                    className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition ${
-                      location === "/admin" ? "bg-blue-700" : ""
-                    }`}
-                  >
-                    <Settings className="w-4 h-4" />
-                    <span>Admin</span>
-                  </a>
+                <Link 
+                  href="/admin"
+                  className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition ${
+                    location === "/admin" ? "bg-blue-700" : ""
+                  }`}
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Admin</span>
                 </Link>
               )}
             </div>

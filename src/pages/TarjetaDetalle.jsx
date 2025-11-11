@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useLocation } from "wouter";
+import toast from "react-hot-toast";
 import { tarjetasService } from "../services/tarjetasService";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ConfirmModal from "../components/ConfirmModal";
 import { Calendar, User, Tag, ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 
@@ -11,6 +13,7 @@ const TarjetaDetalle = () => {
   const [tarjeta, setTarjeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -32,14 +35,17 @@ const TarjetaDetalle = () => {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("¿Estás seguro de eliminar esta tarjeta?")) return;
-
     try {
       await tarjetasService.delete(tarjeta.id);
+      toast.success("Tarjeta eliminada correctamente");
       setLocation("/tableros");
     } catch (err) {
-      alert("Error al eliminar: " + err);
+      toast.error("Error al eliminar la tarjeta");
     }
+  };
+
+  const handleEdit = () => {
+    setLocation(`/admin/tarjetas/${tarjeta.id}/edit`);
   };
 
   if (loading) return <LoadingSpinner />;
@@ -91,12 +97,17 @@ const TarjetaDetalle = () => {
             </span>
             {user?.rol === "Admin" && (
               <>
-                <button className="p-2 text-blue-600 hover:bg-blue-50 rounded">
+                <button 
+                  onClick={handleEdit}
+                  className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
+                  title="Editar tarjeta"
+                >
                   <Edit className="w-5 h-5" />
                 </button>
                 <button
-                  onClick={handleDelete}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded transition"
+                  title="Eliminar tarjeta"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
@@ -173,6 +184,15 @@ const TarjetaDetalle = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        title="Eliminar tarjeta"
+        message="¿Estás seguro de eliminar esta tarjeta? Esta acción no se puede deshacer."
+        confirmText="Eliminar"
+      />
     </div>
   );
 };
