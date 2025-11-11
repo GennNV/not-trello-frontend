@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation, useRoute } from "wouter";
+import toast from "react-hot-toast";
 import { tarjetasService } from "../services/tarjetasService";
 import { tablerosService } from "../services/tablerosService";
 import { tarjetaSchema } from "../schemas/tarjetaSchema";
@@ -77,12 +78,15 @@ const TarjetaForm = () => {
 
       if (isEdit) {
         await tarjetasService.update(params.id, payload);
+        toast.success("Tarjeta actualizada correctamente");
       } else {
         await tarjetasService.create(payload);
+        toast.success("Tarjeta creada correctamente");
       }
 
       setLocation("/tableros");
     } catch (err) {
+      toast.error(isEdit ? "Error al actualizar la tarjeta" : "Error al crear la tarjeta");
       setError(err);
     } finally {
       setLoading(false);

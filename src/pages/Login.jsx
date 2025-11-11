@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const response = await authService.login(data.email, data.password);
-      login(response.usuario, response.token);
+      login(response.user, response.token);
       setLocation("/tableros");
     } catch (err) {
       setError(err || "Error al iniciar sesión");

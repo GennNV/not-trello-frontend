@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "wouter";
+import toast from "react-hot-toast";
 import { tablerosService } from "../services/tablerosService";
 import { useTarjetasStore } from "../store/tarjetasStore";
 import { useAuthStore } from "../store/authStore";
@@ -59,9 +60,11 @@ const Tableros = () => {
     try {
       setCreatingTablero(true);
       await tablerosService.create(data);
+      toast.success("Tablero creado correctamente");
       setIsModalOpen(false);
       await loadTableros();
     } catch (err) {
+      toast.error("Error al crear el tablero");
       setError(err);
     } finally {
       setCreatingTablero(false);

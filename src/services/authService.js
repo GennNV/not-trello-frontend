@@ -4,7 +4,7 @@ export const authService = {
   async login(email, password) {
     try {
       const response = await api.post("/auth/login", { email, password });
-      console.log("Response completa:", response.data);
+      console.log(response.data.data.usuario);
 
 
       return {
@@ -19,7 +19,7 @@ export const authService = {
   async getCurrentUser() {
     try {
       const response = await api.get("/auth/me");
-      // Si /me también devuelve { message, data }
+
       return response.data.data || response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al obtener usuario";

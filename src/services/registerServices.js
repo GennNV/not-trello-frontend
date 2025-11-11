@@ -12,17 +12,15 @@ export const registerService = {
           email,
           username,
           password,
-          confirmPassword,
+          confirmPassword
         }),
       });
-
       const data = await response.json();
 
       if (!response.ok) {
         throw data.message || "Error al registrarse";
       }
 
-      return data;
     } catch (error) {
       if (error instanceof Error) {
         throw error.message;

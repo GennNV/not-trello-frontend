@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Route, Switch, Redirect } from "wouter";
+import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import Navbar from "./components/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -27,6 +28,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toaster position="top-right" />
       <Navbar />
 
       <Suspense fallback={<LoadingSpinner message="Cargando página..." />}>
