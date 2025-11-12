@@ -47,4 +47,15 @@ export const tablerosService = {
       throw error.response?.data?.message || "Error al eliminar tablero";
     }
   },
+
+  async reorderListas(tableroId, listaIds) {
+    try {
+      await api.patch(`/tableros/${tableroId}/listas/reorder`, {
+        listaIds: listaIds,
+      });
+      return true;
+    } catch (error) {
+      throw error.response?.data?.message || "Error al reordenar listas";
+    }
+  },
 };

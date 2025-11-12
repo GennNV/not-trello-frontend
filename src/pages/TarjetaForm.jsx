@@ -9,11 +9,14 @@ import { tarjetaSchema } from "../schemas/tarjetaSchema";
 import { Save, X } from "lucide-react";
 
 const TarjetaForm = () => {
-  const [, setLocation] = useLocation();
+  const [, setLocation] = useLocation(); // Solo usamos setLocation para redirigir
   const [, params] = useRoute("/admin/tarjetas/:id/edit");
   const [loading, setLoading] = useState(false);
   const [listas, setListas] = useState([]);
+  const [tableros, setTableros] = useState([]);
+  const [selectedTableroId, setSelectedTableroId] = useState("");
   const [error, setError] = useState("");
+  const [comesFromTablero, setComesFromTablero] = useState(false);
   const isEdit = !!params?.id;
 
   const {
@@ -26,21 +29,82 @@ const TarjetaForm = () => {
   });
 
   useEffect(() => {
-    loadListas();
+    // Uso window.location.search para obtener los query parameters porque wouter me lo rompia!!!!
+    const urlParams = new URLSearchParams(window.location.search);
+    const tableroId = urlParams.get("tableroId");
+
+    console.log("🔍 URL completa:", window.location.href);
+    console.log("🔍 Query string:", window.location.search);
+    console.log("🔍 tableroId del query string:", tableroId);
+
+    if (tableroId) {
+      console.log("✅ Viene desde un tablero, ID:", tableroId);
+      setSelectedTableroId(tableroId);
+      setComesFromTablero(true); // Indica que viene desde un tablero específico
+    } else {
+      console.log("❌ No viene desde un tablero específico");
+    }
+
+    loadTableros();
+
     if (isEdit) {
       loadTarjeta(params.id);
     }
   }, []);
 
-  const loadListas = async () => {
+  useEffect(() => {
+    if (selectedTableroId && tableros.length > 0) {
+      filterListasByTablero(selectedTableroId);
+    }
+  }, [selectedTableroId, tableros]);
+
+  const loadTableros = async () => {
     try {
-      const tableros = await tablerosService.getAll();
-      const allListas = tableros.flatMap((t) =>
-        t.listas.map((l) => ({ id: l.id, titulo: `${t.titulo} - ${l.titulo}` }))
-      );
-      setListas(allListas);
+      const data = await tablerosService.getAll();
+      setTableros(data);
+
+      // Si ya hay un tablero seleccionado, filtrar sus listas usando los datos recién cargados
+      if (selectedTableroId) {
+        const tablero = data.find(
+          (t) => t.id.toString() === selectedTableroId.toString()
+        );
+        if (tablero) {
+          const listasDelTablero = tablero.listas.map((l) => ({
+            id: l.id,
+            titulo: l.titulo,
+          }));
+          setListas(listasDelTablero);
+        }
+      }
     } catch (err) {
-      console.error("Error al cargar listas:", err);
+      console.error("Error al cargar tableros:", err);
+    }
+  };
+
+  const filterListasByTablero = (tableroId) => {
+    const tablero = tableros.find(
+      (t) => t.id.toString() === tableroId.toString()
+    );
+    if (tablero) {
+      const listasDelTablero = tablero.listas.map((l) => ({
+        id: l.id,
+        titulo: l.titulo,
+      }));
+      setListas(listasDelTablero);
+    }
+  };
+
+  const handleTableroChange = (e) => {
+    const tableroId = e.target.value;
+    setSelectedTableroId(tableroId);
+
+    if (tableroId) {
+      filterListasByTablero(tableroId);
+      // Limpiar la lista seleccionada cuando cambias de tablero
+      setValue("listaId", "");
+    } else {
+      setListas([]);
+      setValue("listaId", "");
     }
   };
 
@@ -56,6 +120,11 @@ const TarjetaForm = () => {
       }
       if (tarjeta.asignadoAId) {
         setValue("asignadoAId", tarjeta.asignadoAId);
+      }
+
+      // Encontrar el tablero que contiene esta lista para preseleccionarlo
+      if (tarjeta.tableroId) {
+        setSelectedTableroId(tarjeta.tableroId.toString());
       }
     } catch (err) {
       setError(err);
@@ -86,7 +155,9 @@ const TarjetaForm = () => {
 
       setLocation("/tableros");
     } catch (err) {
-      toast.error(isEdit ? "Error al actualizar la tarjeta" : "Error al crear la tarjeta");
+      toast.error(
+        isEdit ? "Error al actualizar la tarjeta" : "Error al crear la tarjeta"
+      );
       setError(err);
     } finally {
       setLoading(false);
@@ -145,51 +216,95 @@ const TarjetaForm = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Selector de Tablero - Solo si NO viene desde un tablero específico */}
+          {!comesFromTablero && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Prioridad *
+                Tablero *
               </label>
               <select
-                {...register("prioridad")}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.prioridad ? "border-red-500" : "border-gray-300"
-                }`}
+                value={selectedTableroId}
+                onChange={handleTableroChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={isEdit}
               >
-                <option value="Baja">Baja</option>
-                <option value="Media">Media</option>
-                <option value="Alta">Alta</option>
-              </select>
-              {errors.prioridad && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.prioridad.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lista *
-              </label>
-              <select
-                {...register("listaId", { valueAsNumber: true })}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.listaId ? "border-red-500" : "border-gray-300"
-                }`}
-              >
-                <option value="">Seleccionar lista</option>
-                {listas.map((lista) => (
-                  <option key={lista.id} value={lista.id}>
-                    {lista.titulo}
+                <option value="">Seleccionar tablero</option>
+                {tableros.map((tablero) => (
+                  <option key={tablero.id} value={tablero.id}>
+                    {tablero.titulo}
                   </option>
                 ))}
               </select>
-              {errors.listaId && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.listaId.message}
+              {!selectedTableroId && !isEdit && (
+                <p className="mt-1 text-sm text-gray-500">
+                  Primero selecciona un tablero
                 </p>
               )}
             </div>
+          )}
+
+          {/* Si viene desde un tablero, mostrar info del tablero */}
+          {comesFromTablero && selectedTableroId && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-gray-700">
+                <span className="font-semibold">Tablero:</span>{" "}
+                {tableros.find((t) => t.id.toString() === selectedTableroId)
+                  ?.titulo || "Cargando..."}
+              </p>
+            </div>
+          )}
+
+          {/* Selector de Lista */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Lista *
+            </label>
+            <select
+              {...register("listaId", { valueAsNumber: true })}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                errors.listaId ? "border-red-500" : "border-gray-300"
+              }`}
+              disabled={!selectedTableroId || listas.length === 0}
+            >
+              <option value="">
+                {selectedTableroId
+                  ? listas.length === 0
+                    ? "No hay listas en este tablero"
+                    : "Seleccionar lista"
+                  : "Primero selecciona un tablero"}
+              </option>
+              {listas.map((lista) => (
+                <option key={lista.id} value={lista.id}>
+                  {lista.titulo}
+                </option>
+              ))}
+            </select>
+            {errors.listaId && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.listaId.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Prioridad *
+            </label>
+            <select
+              {...register("prioridad")}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                errors.prioridad ? "border-red-500" : "border-gray-300"
+              }`}
+            >
+              <option value="Baja">Baja</option>
+              <option value="Media">Media</option>
+              <option value="Alta">Alta</option>
+            </select>
+            {errors.prioridad && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.prioridad.message}
+              </p>
+            )}
           </div>
 
           <div>

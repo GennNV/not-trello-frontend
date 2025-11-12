@@ -104,8 +104,18 @@ const TableroDetalle = () => {
       // Insertar la lista en su nueva posición
       listasReordenadas.splice(destination.index, 0, listaMovida);
 
-      // Actualizar el estado local
+      // Actualizar el estado local inmediatamente para mejor UX
       setTablero({ ...newTablero, listas: listasReordenadas });
+
+      // Enviar actualización al backend
+      try {
+        const listaIds = listasReordenadas.map((lista) => lista.id);
+        await tablerosService.reorderListas(params.id, listaIds);
+      } catch (err) {
+        console.error("Error al reordenar listas:", err);
+        // Si hay error, recargar el tablero para restaurar el orden original
+        loadTablero(params.id);
+      }
 
       return;
     }
@@ -163,12 +173,21 @@ const TableroDetalle = () => {
               <p className="text-gray-600">{tablero.descripcion}</p>
             </div>
             {user?.rol === "Admin" && (
-              <Link href="/admin/tarjetas/new">
-                <a className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                >
                   <Plus className="w-4 h-4 mr-1" />
-                  Nueva Tarjeta
-                </a>
-              </Link>
+                  Agregar Lista
+                </button>
+                <Link href={`/admin/tarjetas/new?tableroId=${tablero.id}`}>
+                  <a className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                    <Plus className="w-4 h-4 mr-1" />
+                    Nueva Tarjeta
+                  </a>
+                </Link>
+              </div>
             )}
           </div>
         </div>
@@ -289,19 +308,6 @@ const TableroDetalle = () => {
                   </Draggable>
                 ))}
                 {provided.placeholder}
-
-                {/* Botón para agregar nueva lista */}
-                {user?.rol === "Admin" && (
-                  <div className="flex-shrink-0 w-80">
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="w-full bg-gray-200 hover:bg-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-600 hover:text-gray-800 transition"
-                    >
-                      <Plus className="w-5 h-5 mr-2" />
-                      Agregar Lista
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </Droppable>
