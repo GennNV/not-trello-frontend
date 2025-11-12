@@ -6,7 +6,7 @@ const Home = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center text-white mb-16">
-          <h1 className="text-5xl font-bold mb-4">TrelloClone</h1>
+          <h1 className="text-5xl font-bold mb-4">Not-Trello</h1>
           <p className="text-xl mb-8">
             Gestiona tus proyectos de forma eficiente y colaborativa
           </p>

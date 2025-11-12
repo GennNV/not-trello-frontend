@@ -20,16 +20,16 @@ const Navbar = () => {
           <div className="flex items-center space-x-8">
             <Link
               href="/"
-              className="flex items-center space-x-2 text-xl font-bold"
+              className="flex items-center space-x-2 text-xl font-bold cursor-pointer hover:opacity-80 transition"
             >
               <LayoutDashboard className="w-6 h-6" />
-              <span>TrelloClone</span>
+              <span>Not-Trello</span>
             </Link>
 
             <div className="flex space-x-4">
               <Link
                 href="/tableros"
-                className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition ${
+                className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition cursor-pointer ${
                   location === "/tableros" ? "bg-blue-700" : ""
                 }`}
               >
@@ -40,7 +40,7 @@ const Navbar = () => {
               {user?.rol === "Admin" && (
                 <Link
                   href="/admin"
-                  className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition ${
+                  className={`flex items-center space-x-1 px-3 py-2 rounded hover:bg-blue-700 transition cursor-pointer ${
                     location === "/admin" ? "bg-blue-700" : ""
                   }`}
                 >
@@ -58,7 +58,7 @@ const Navbar = () => {
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-1 px-3 py-2 bg-blue-700 rounded hover:bg-blue-800 transition"
+              className="flex items-center space-x-1 px-3 py-2 bg-blue-700 rounded hover:bg-blue-800 transition cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>Salir</span>

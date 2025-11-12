@@ -72,7 +72,7 @@ const TarjetaDetalle = () => {
     <div className="container mx-auto px-4 py-8">
       <button
         onClick={() => setLocation("/tableros")}
-        className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
+        className="flex items-center text-blue-600 hover:text-blue-800 mb-6 cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         Volver a tableros
@@ -97,16 +97,16 @@ const TarjetaDetalle = () => {
             </span>
             {user?.rol === "Admin" && (
               <>
-                <button 
+                <button
                   onClick={handleEdit}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
+                  className="p-2 text-blue-600 hover:bg-blue-50 rounded transition cursor-pointer"
                   title="Editar tarjeta"
                 >
                   <Edit className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded transition"
+                  className="p-2 text-red-600 hover:bg-red-50 rounded transition cursor-pointer"
                   title="Eliminar tarjeta"
                 >
                   <Trash2 className="w-5 h-5" />

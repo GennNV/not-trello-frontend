@@ -32,7 +32,7 @@ export const tablerosService = {
 
   async createLista(tableroId, data) {
     try {
-      const response = await api.post(`/tableros/${tableroId}/listas`, data);
+      const response = await api.post(`/tableros/${tableroId}`, data);
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al crear lista";
@@ -56,6 +56,15 @@ export const tablerosService = {
       return true;
     } catch (error) {
       throw error.response?.data?.message || "Error al reordenar listas";
+    }
+  },
+
+  async deleteLista(listaId) {
+    try {
+      await api.delete(`/listas/${listaId}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data?.message || "Error al eliminar lista";
     }
   },
 };

@@ -47,7 +47,7 @@ const TarjetaCard = ({ tarjeta }) => {
 
   return (
     <Link href={`/tarjetas/${tarjeta.id}`}>
-      <a className="block bg-white rounded-lg shadow hover:shadow-lg transition border border-gray-200 overflow-hidden">
+      <a className="block bg-white rounded-lg shadow hover:shadow-lg transition border border-gray-200 overflow-hidden cursor-pointer">
         <div className="p-4">
           <div className="flex items-start justify-between mb-2">
             <h3 className="font-semibold text-gray-800 flex-1">
@@ -106,7 +106,11 @@ const TarjetaCard = ({ tarjeta }) => {
           </div>
         </div>
 
-        <div className={`px-4 py-2 border-t border-gray-200 ${getEstadoBgColor(tarjeta.estado)}`}>
+        <div
+          className={`px-4 py-2 border-t border-gray-200 ${getEstadoBgColor(
+            tarjeta.estado
+          )}`}
+        >
           <span className="text-xs text-gray-700 font-medium">
             {getEstadoTexto(tarjeta.estado)}
           </span>

@@ -1,7 +1,15 @@
 import React from "react";
 import { AlertTriangle, X } from "lucide-react";
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar" }) => {
+const ConfirmModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmText = "Confirmar",
+  cancelText = "Cancelar",
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -16,7 +24,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText 
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition"
+            className="text-gray-400 hover:text-gray-600 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -29,7 +37,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText 
         <div className="flex items-center justify-end space-x-3 p-6 border-t bg-gray-50">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition cursor-pointer"
           >
             {cancelText}
           </button>
@@ -38,7 +46,7 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText 
               onConfirm();
               onClose();
             }}
-            className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition"
+            className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 transition cursor-pointer"
           >
             {confirmText}
           </button>
