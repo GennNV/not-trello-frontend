@@ -47,7 +47,7 @@ const TarjetaCard = ({ tarjeta }) => {
 
   return (
     <Link href={`/tarjetas/${tarjeta.id}`}>
-      <a className="block bg-white rounded-lg shadow hover:shadow-lg transition border border-gray-200 overflow-hidden cursor-pointer">
+      <a className="block bg-white rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 border border-gray-200 overflow-hidden cursor-pointer">
         <div className="p-4">
           <div className="flex items-start justify-between mb-2">
             <h3 className="font-semibold text-gray-800 flex-1">

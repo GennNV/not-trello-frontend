@@ -153,7 +153,10 @@ const TarjetaForm = () => {
         toast.success("Tarjeta creada correctamente");
       }
 
-      setLocation("/tableros");
+      // Volver al tablero específico si venimos de uno, sino a la lista de tableros
+      setLocation(
+        selectedTableroId ? `/tableros/${selectedTableroId}` : "/tableros"
+      );
     } catch (err) {
       toast.error(
         isEdit ? "Error al actualizar la tarjeta" : "Error al crear la tarjeta"
@@ -334,7 +337,13 @@ const TarjetaForm = () => {
 
             <button
               type="button"
-              onClick={() => setLocation("/tableros")}
+              onClick={() =>
+                setLocation(
+                  selectedTableroId
+                    ? `/tableros/${selectedTableroId}`
+                    : "/tableros"
+                )
+              }
               className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center cursor-pointer"
             >
               <X className="w-5 h-5 mr-2" />

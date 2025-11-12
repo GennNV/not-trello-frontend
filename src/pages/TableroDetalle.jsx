@@ -90,6 +90,15 @@ const TableroDetalle = () => {
   const handleDeleteClick = (e, lista) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Verificar si la lista tiene tarjetas
+    if (lista.tarjetas && lista.tarjetas.length > 0) {
+      toast.error(
+        "No es posible eliminar una lista con tarjetas. Elimina primero todas las tarjetas."
+      );
+      return;
+    }
+
     setListaToDelete(lista);
     setIsDeleteModalOpen(true);
   };
@@ -302,9 +311,11 @@ const TableroDetalle = () => {
                                             : ""
                                         }`}
                                       >
-                                        <Link href={`/tarjetas/${tarjeta.id}`}>
+                                        <Link
+                                          href={`/tarjetas/${tarjeta.id}?tableroId=${tablero.id}`}
+                                        >
                                           <a
-                                            className={`block bg-white rounded shadow hover:shadow-md transition p-3 cursor-pointer ${getPrioridadColor(
+                                            className={`block bg-white rounded shadow hover:shadow-md hover:-translate-y-1 transition-all duration-200 p-3 cursor-pointer ${getPrioridadColor(
                                               tarjeta.prioridad
                                             )}`}
                                           >

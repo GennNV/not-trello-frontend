@@ -80,6 +80,15 @@ const Tableros = () => {
   const handleDeleteClick = (e, tablero) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Verificar si el tablero tiene listas
+    if (tablero.listas && tablero.listas.length > 0) {
+      toast.error(
+        "No es posible eliminar un tablero con listas. Elimina primero todas las listas."
+      );
+      return;
+    }
+
     setTableroToDelete(tablero);
     setIsDeleteModalOpen(true);
   };

@@ -14,7 +14,16 @@ const TarjetaDetalle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [tableroId, setTableroId] = useState(null);
   const { user } = useAuthStore();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tableroIdParam = urlParams.get("tableroId");
+    if (tableroIdParam) {
+      setTableroId(tableroIdParam);
+    }
+  }, []);
 
   useEffect(() => {
     if (params?.id) {
@@ -38,14 +47,20 @@ const TarjetaDetalle = () => {
     try {
       await tarjetasService.delete(tarjeta.id);
       toast.success("Tarjeta eliminada correctamente");
-      setLocation("/tableros");
+      // Volver al tablero específico si venimos de uno, sino a la lista de tableros
+      setLocation(tableroId ? `/tableros/${tableroId}` : "/tableros");
     } catch (err) {
       toast.error("Error al eliminar la tarjeta");
+      console.error(err);
     }
   };
 
   const handleEdit = () => {
-    setLocation(`/admin/tarjetas/${tarjeta.id}/edit`);
+    // Pasar el tableroId al formulario de edición para poder volver al tablero correcto
+    const editUrl = tableroId
+      ? `/admin/tarjetas/${tarjeta.id}/edit?tableroId=${tableroId}`
+      : `/admin/tarjetas/${tarjeta.id}/edit`;
+    setLocation(editUrl);
   };
 
   if (loading) return <LoadingSpinner />;
@@ -71,11 +86,13 @@ const TarjetaDetalle = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <button
-        onClick={() => setLocation("/tableros")}
+        onClick={() =>
+          setLocation(tableroId ? `/tableros/${tableroId}` : "/tableros")
+        }
         className="flex items-center text-blue-600 hover:text-blue-800 mb-6 cursor-pointer"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
-        Volver a tableros
+        {tableroId ? "Volver al tablero" : "Volver a tableros"}
       </button>
 
       <div className="bg-white rounded-lg shadow-lg p-8">
