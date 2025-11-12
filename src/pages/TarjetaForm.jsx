@@ -322,7 +322,7 @@ const TarjetaForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               <Save className="w-5 h-5 mr-2" />
               {loading
@@ -335,7 +335,7 @@ const TarjetaForm = () => {
             <button
               type="button"
               onClick={() => setLocation("/tableros")}
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center"
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center cursor-pointer"
             >
               <X className="w-5 h-5 mr-2" />
               Cancelar

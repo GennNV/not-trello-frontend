@@ -154,7 +154,7 @@ const Tableros = () => {
         {user?.rol === "Admin" && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
           >
             <Plus className="w-5 h-5 mr-2" />
             Nuevo Tablero
@@ -207,14 +207,14 @@ const Tableros = () => {
         {tableros.map((tablero) => (
           <Link key={tablero.id} href={`/tableros/${tablero.id}`}>
             <a
-              className="block bg-white rounded-lg shadow hover:shadow-xl transition p-6 border-l-4 relative group"
+              className="block bg-white rounded-lg shadow hover:shadow-xl transition p-6 border-l-4 relative group cursor-pointer"
               style={{ borderLeftColor: tablero.color }}
             >
               {/* Botón de eliminar - solo visible en hover y para Admin */}
               {user?.rol === "Admin" && (
                 <button
                   onClick={(e) => handleDeleteClick(e, tablero)}
-                  className="absolute top-0 left-0 flex items-center gap-1 px-3 py-1.5 bg-red-500/90 hover:bg-red-600 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10"
+                  className="absolute top-0 left-0 flex items-center gap-1 px-3 py-1.5 bg-red-500/90 hover:bg-red-600 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 cursor-pointer"
                   title="Eliminar tablero"
                 >
                   <X className="w-3 h-3" />
@@ -263,7 +263,7 @@ const Tableros = () => {
               {/* Botón de ordenamiento por fecha */}
               <button
                 onClick={toggleSortOrder}
-                className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition ${
+                className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition cursor-pointer ${
                   sortOrder
                     ? "bg-blue-50 border-blue-500 text-blue-700"
                     : "border-gray-300 text-gray-600 hover:bg-gray-50"

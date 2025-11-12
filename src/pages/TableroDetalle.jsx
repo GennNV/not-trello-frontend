@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useLocation, Link } from "wouter";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import toast from "react-hot-toast";
 import { tablerosService } from "../services/tablerosService";
 import { tarjetasService } from "../services/tarjetasService";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Modal from "../components/Modal";
 import ListaForm from "../components/ListaForm";
-import { ArrowLeft, Plus } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
+import { ArrowLeft, Plus, X } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 
 const TableroDetalle = () => {
@@ -17,6 +19,8 @@ const TableroDetalle = () => {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creatingLista, setCreatingLista] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [listaToDelete, setListaToDelete] = useState(null);
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -72,12 +76,36 @@ const TableroDetalle = () => {
     try {
       setCreatingLista(true);
       await tablerosService.createLista(params.id, data);
+      toast.success("Lista creada correctamente");
       setIsModalOpen(false);
       await loadTablero(params.id);
     } catch (err) {
+      toast.error("Error al crear la lista");
       setError(err);
     } finally {
       setCreatingLista(false);
+    }
+  };
+
+  const handleDeleteClick = (e, lista) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setListaToDelete(lista);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!listaToDelete) return;
+
+    try {
+      await tablerosService.deleteLista(listaToDelete.id);
+      toast.success("Lista eliminada correctamente");
+      await loadTablero(params.id);
+    } catch (err) {
+      toast.error("Error al eliminar la lista");
+      console.error(err);
+    } finally {
+      setListaToDelete(null);
     }
   };
 
@@ -160,7 +188,7 @@ const TableroDetalle = () => {
         <div className="container mx-auto px-4 py-4">
           <button
             onClick={() => setLocation("/tableros")}
-            className="flex items-center text-blue-600 hover:text-blue-800 mb-2"
+            className="flex items-center text-blue-600 hover:text-blue-800 mb-2 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             Volver
@@ -176,13 +204,13 @@ const TableroDetalle = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                  className="flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition cursor-pointer"
                 >
                   <Plus className="w-4 h-4 mr-1" />
                   Agregar Lista
                 </button>
                 <Link href={`/admin/tarjetas/new?tableroId=${tablero.id}`}>
-                  <a className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                  <a className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition cursor-pointer">
                     <Plus className="w-4 h-4 mr-1" />
                     Nueva Tarjeta
                   </a>
@@ -220,7 +248,19 @@ const TableroDetalle = () => {
                           snapshotLista.isDragging ? "opacity-70" : ""
                         }`}
                       >
-                        <div className="bg-gray-200 rounded-lg p-4">
+                        <div className="bg-gray-200 rounded-lg p-4 relative group">
+                          {/* Botón de eliminar lista - solo visible en hover y para Admin */}
+                          {user?.rol === "Admin" && (
+                            <button
+                              onClick={(e) => handleDeleteClick(e, lista)}
+                              className="absolute top-1 right-1 flex items-center gap-1 px-2 py-1 bg-red-500/90 hover:bg-red-600 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 cursor-pointer"
+                              title="Eliminar lista"
+                            >
+                              <X className="w-3 h-3" />
+                              <span>Eliminar</span>
+                            </button>
+                          )}
+
                           <div
                             {...providedLista.dragHandleProps}
                             className="flex items-center justify-between mb-4 cursor-move"
@@ -264,7 +304,7 @@ const TableroDetalle = () => {
                                       >
                                         <Link href={`/tarjetas/${tarjeta.id}`}>
                                           <a
-                                            className={`block bg-white rounded shadow hover:shadow-md transition p-3 ${getPrioridadColor(
+                                            className={`block bg-white rounded shadow hover:shadow-md transition p-3 cursor-pointer ${getPrioridadColor(
                                               tarjeta.prioridad
                                             )}`}
                                           >
@@ -326,6 +366,20 @@ const TableroDetalle = () => {
           loading={creatingLista}
         />
       </Modal>
+
+      {/* Modal de confirmación para eliminar lista */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setListaToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        title="Eliminar Lista"
+        message={`¿Estás seguro de que deseas eliminar la lista "${listaToDelete?.titulo}"? Esta acción eliminará todas las tarjetas contenidas en la lista y no se puede deshacer.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+      />
     </div>
   );
 };

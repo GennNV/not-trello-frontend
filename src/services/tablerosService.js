@@ -58,4 +58,13 @@ export const tablerosService = {
       throw error.response?.data?.message || "Error al reordenar listas";
     }
   },
+
+  async deleteLista(listaId) {
+    try {
+      await api.delete(`/listas/${listaId}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data?.message || "Error al eliminar lista";
+    }
+  },
 };
