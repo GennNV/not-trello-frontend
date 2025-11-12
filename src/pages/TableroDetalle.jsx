@@ -82,7 +82,7 @@ const TableroDetalle = () => {
   };
 
   const onDragEnd = async (result) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, type } = result;
 
     // Si no hay destino o se soltó en el mismo lugar
     if (!destination) return;
@@ -93,7 +93,24 @@ const TableroDetalle = () => {
       return;
     }
 
-    // Crear una copia del tablero para actualizar localmente
+    // Manejar drag and drop de LISTAS
+    if (type === "lista") {
+      const newTablero = { ...tablero };
+      const listasReordenadas = Array.from(newTablero.listas);
+
+      // Remover la lista de su posición original
+      const [listaMovida] = listasReordenadas.splice(source.index, 1);
+
+      // Insertar la lista en su nueva posición
+      listasReordenadas.splice(destination.index, 0, listaMovida);
+
+      // Actualizar el estado local
+      setTablero({ ...newTablero, listas: listasReordenadas });
+
+      return;
+    }
+
+    // Manejar drag and drop de TARJETAS (código original)
     const newTablero = { ...tablero };
     const sourceLista = newTablero.listas.find(
       (l) => l.id.toString() === source.droppableId
@@ -159,97 +176,135 @@ const TableroDetalle = () => {
 
       <div className="container mx-auto px-4 py-6">
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex space-x-4 overflow-x-auto pb-4">
-            {tablero.listas.map((lista) => (
+          <Droppable
+            droppableId="all-listas"
+            direction="horizontal"
+            type="lista"
+          >
+            {(provided) => (
               <div
-                key={lista.id}
-                className="flex-shrink-0 w-80 bg-gray-200 rounded-lg p-4"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="flex space-x-4 overflow-x-auto pb-4"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-gray-800">{lista.titulo}</h2>
-                  <span className="bg-gray-400 text-white px-2 py-1 rounded text-sm">
-                    {lista.tarjetas.length}
-                  </span>
-                </div>
+                {tablero.listas.map((lista, listaIndex) => (
+                  <Draggable
+                    key={lista.id}
+                    draggableId={`lista-${lista.id}`}
+                    index={listaIndex}
+                  >
+                    {(providedLista, snapshotLista) => (
+                      <div
+                        ref={providedLista.innerRef}
+                        {...providedLista.draggableProps}
+                        className={`flex-shrink-0 w-80 ${
+                          snapshotLista.isDragging ? "opacity-70" : ""
+                        }`}
+                      >
+                        <div className="bg-gray-200 rounded-lg p-4">
+                          <div
+                            {...providedLista.dragHandleProps}
+                            className="flex items-center justify-between mb-4 cursor-move"
+                          >
+                            <h2 className="font-bold text-gray-800">
+                              {lista.titulo}
+                            </h2>
+                            <span className="bg-gray-400 text-white px-2 py-1 rounded text-sm">
+                              {lista.tarjetas.length}
+                            </span>
+                          </div>
 
-                <Droppable droppableId={lista.id.toString()}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className={`space-y-3 min-h-[100px] ${
-                        snapshot.isDraggingOver ? "bg-gray-300" : ""
-                      } rounded p-2 transition-colors`}
-                    >
-                      {lista.tarjetas.map((tarjeta, index) => (
-                        <Draggable
-                          key={tarjeta.id}
-                          draggableId={tarjeta.id.toString()}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={`${
-                                snapshot.isDragging ? "opacity-50" : ""
-                              }`}
-                            >
-                              <Link href={`/tarjetas/${tarjeta.id}`}>
-                                <a
-                                  className={`block bg-white rounded shadow hover:shadow-md transition p-3 ${getPrioridadColor(
-                                    tarjeta.prioridad
-                                  )}`}
-                                >
-                                  <h3 className="font-semibold text-gray-800 mb-1">
-                                    {tarjeta.titulo}
-                                  </h3>
-                                  {tarjeta.descripcion && (
-                                    <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                                      {tarjeta.descripcion}
-                                    </p>
-                                  )}
-                                  <div className="flex items-center justify-between text-xs text-gray-500">
-                                    <span className="bg-gray-100 px-2 py-1 rounded">
-                                      {tarjeta.prioridad}
-                                    </span>
-                                    {tarjeta.nombreAsignado && (
-                                      <span>{tarjeta.nombreAsignado}</span>
+                          <Droppable
+                            droppableId={lista.id.toString()}
+                            type="tarjeta"
+                          >
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                className={`space-y-3 min-h-[100px] ${
+                                  snapshot.isDraggingOver ? "bg-gray-300" : ""
+                                } rounded p-2 transition-colors`}
+                              >
+                                {lista.tarjetas.map((tarjeta, index) => (
+                                  <Draggable
+                                    key={tarjeta.id}
+                                    draggableId={tarjeta.id.toString()}
+                                    index={index}
+                                  >
+                                    {(provided, snapshot) => (
+                                      <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        className={`${
+                                          snapshot.isDragging
+                                            ? "opacity-50"
+                                            : ""
+                                        }`}
+                                      >
+                                        <Link href={`/tarjetas/${tarjeta.id}`}>
+                                          <a
+                                            className={`block bg-white rounded shadow hover:shadow-md transition p-3 ${getPrioridadColor(
+                                              tarjeta.prioridad
+                                            )}`}
+                                          >
+                                            <h3 className="font-semibold text-gray-800 mb-1">
+                                              {tarjeta.titulo}
+                                            </h3>
+                                            {tarjeta.descripcion && (
+                                              <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                                                {tarjeta.descripcion}
+                                              </p>
+                                            )}
+                                            <div className="flex items-center justify-between text-xs text-gray-500">
+                                              <span className="bg-gray-100 px-2 py-1 rounded">
+                                                {tarjeta.prioridad}
+                                              </span>
+                                              {tarjeta.nombreAsignado && (
+                                                <span>
+                                                  {tarjeta.nombreAsignado}
+                                                </span>
+                                              )}
+                                            </div>
+                                          </a>
+                                        </Link>
+                                      </div>
                                     )}
-                                  </div>
-                                </a>
-                              </Link>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
+                                  </Draggable>
+                                ))}
+                                {provided.placeholder}
 
-                      {lista.tarjetas.length === 0 && (
-                        <p className="text-center text-gray-500 text-sm py-4">
-                          No hay tarjetas
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-            ))}
+                                {lista.tarjetas.length === 0 && (
+                                  <p className="text-center text-gray-500 text-sm py-4">
+                                    No hay tarjetas
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </Droppable>
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
 
-            {/* Botón para agregar nueva lista */}
-            {user?.rol === "Admin" && (
-              <div className="flex-shrink-0 w-80">
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="w-full bg-gray-200 hover:bg-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-600 hover:text-gray-800 transition"
-                >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Agregar Lista
-                </button>
+                {/* Botón para agregar nueva lista */}
+                {user?.rol === "Admin" && (
+                  <div className="flex-shrink-0 w-80">
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="w-full bg-gray-200 hover:bg-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-600 hover:text-gray-800 transition"
+                    >
+                      <Plus className="w-5 h-5 mr-2" />
+                      Agregar Lista
+                    </button>
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </Droppable>
         </DragDropContext>
       </div>
 

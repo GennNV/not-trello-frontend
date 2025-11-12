@@ -4,7 +4,7 @@ export const tablerosService = {
   async getAll() {
     try {
       const response = await api.get("/tableros");
-      
+
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al obtener tableros";
@@ -14,7 +14,7 @@ export const tablerosService = {
   async getById(id) {
     try {
       const response = await api.get(`/tableros/${id}`);
-      console.log(response.data)
+      console.log(response.data);
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al obtener tablero";
@@ -36,6 +36,15 @@ export const tablerosService = {
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || "Error al crear lista";
+    }
+  },
+
+  async delete(id) {
+    try {
+      await api.delete(`/tableros/${id}`);
+      return true;
+    } catch (error) {
+      throw error.response?.data?.message || "Error al eliminar tablero";
     }
   },
 };
