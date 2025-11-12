@@ -6,8 +6,10 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ConfirmModal from "../components/ConfirmModal";
 import { Calendar, User, Tag, ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
+import { useThemeStore } from "../store/themeStore";
 
 const TarjetaDetalle = () => {
+  const { darkMode } = useThemeStore();
   const [, params] = useRoute("/tarjetas/:id");
   const [, setLocation] = useLocation();
   const [tarjeta, setTarjeta] = useState(null);
@@ -72,19 +74,29 @@ const TarjetaDetalle = () => {
     <div className="container mx-auto px-4 py-8">
       <button
         onClick={() => setLocation("/tableros")}
-        className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
+        className="flex items-center mb-6 transition"
+        style={{ color: 'rgb(37, 99, 235)' }}
+        onMouseEnter={(e) => e.target.style.color = 'rgb(29, 78, 216)'}
+        onMouseLeave={(e) => e.target.style.color = 'rgb(37, 99, 235)'}
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         Volver a tableros
       </button>
 
-      <div className="bg-white rounded-lg shadow-lg p-8">
+      <div 
+        className="rounded-lg shadow-lg p-8"
+        style={{
+          backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white'
+        }}
+      >
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold mb-2" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
               {tarjeta.titulo}
             </h1>
-            <p className="text-gray-600">En lista: {tarjeta.nombreLista}</p>
+            <p style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(75, 85, 99)' }}>
+              En lista: {tarjeta.nombreLista}
+            </p>
           </div>
 
           <div className="flex items-center space-x-2">
@@ -99,14 +111,22 @@ const TarjetaDetalle = () => {
               <>
                 <button 
                   onClick={handleEdit}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded transition"
+                  className="p-2 rounded transition"
+                  style={{
+                    color: 'rgb(37, 99, 235)',
+                    backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(239, 246, 255)'
+                  }}
                   title="Editar tarjeta"
                 >
                   <Edit className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded transition"
+                  className="p-2 rounded transition"
+                  style={{
+                    color: 'rgb(220, 38, 38)',
+                    backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(254, 242, 242)'
+                  }}
                   title="Eliminar tarjeta"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -118,10 +138,10 @@ const TarjetaDetalle = () => {
 
         <div className="space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            <h2 className="text-lg font-semibold mb-2" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
               Descripción
             </h2>
-            <p className="text-gray-700 whitespace-pre-wrap">
+            <p className="whitespace-pre-wrap" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               {tarjeta.descripcion || "Sin descripción"}
             </p>
           </div>
@@ -129,12 +149,12 @@ const TarjetaDetalle = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {tarjeta.fechaVencimiento && (
               <div className="flex items-start space-x-3">
-                <Calendar className="w-5 h-5 text-gray-400 mt-1" />
+                <Calendar className="w-5 h-5 mt-1" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(156, 163, 175)' }} />
                 <div>
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                     Fecha de vencimiento
                   </h3>
-                  <p className="text-gray-600">
+                  <p style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)' }}>
                     {new Date(tarjeta.fechaVencimiento).toLocaleDateString(
                       "es-ES",
                       {
@@ -150,19 +170,19 @@ const TarjetaDetalle = () => {
 
             {tarjeta.nombreAsignado && (
               <div className="flex items-start space-x-3">
-                <User className="w-5 h-5 text-gray-400 mt-1" />
+                <User className="w-5 h-5 mt-1" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(156, 163, 175)' }} />
                 <div>
-                  <h3 className="font-semibold text-gray-800">Asignado a</h3>
-                  <p className="text-gray-600">{tarjeta.nombreAsignado}</p>
+                  <h3 className="font-semibold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>Asignado a</h3>
+                  <p style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)' }}>{tarjeta.nombreAsignado}</p>
                 </div>
               </div>
             )}
 
             <div className="flex items-start space-x-3">
-              <Tag className="w-5 h-5 text-gray-400 mt-1" />
+              <Tag className="w-5 h-5 mt-1" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(156, 163, 175)' }} />
               <div>
-                <h3 className="font-semibold text-gray-800">Estado</h3>
-                <p className="text-gray-600">
+                <h3 className="font-semibold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>Estado</h3>
+                <p style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)' }}>
                   {tarjeta.estado === "Todo" && "Por Hacer"}
                   {tarjeta.estado === "InProgress" && "En Progreso"}
                   {tarjeta.estado === "Done" && "Completado"}
@@ -171,12 +191,12 @@ const TarjetaDetalle = () => {
             </div>
 
             <div className="flex items-start space-x-3">
-              <Calendar className="w-5 h-5 text-gray-400 mt-1" />
+              <Calendar className="w-5 h-5 mt-1" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(156, 163, 175)' }} />
               <div>
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                   Fecha de creación
                 </h3>
-                <p className="text-gray-600">
+                <p style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)' }}>
                   {new Date(tarjeta.fechaCreacion).toLocaleDateString("es-ES")}
                 </p>
               </div>

@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { tablerosService } from "../services/tablerosService";
 import { useTarjetasStore } from "../store/tarjetasStore";
 import { useAuthStore } from "../store/authStore";
+import { useThemeStore } from "../store/themeStore";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TarjetaCard from "../components/TarjetaCard";
 import Modal from "../components/Modal";
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 
 const Tableros = () => {
+  const { darkMode } = useThemeStore();
   const [tableros, setTableros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -122,11 +124,25 @@ const Tableros = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Mis Tableros</h1>
+        <h1 
+          className="text-3xl font-bold px-4 py-2 rounded-lg" 
+          style={{ 
+            color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)',
+            backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(8px)'
+          }}
+        >
+          Mis Tableros
+        </h1>
         {user?.rol === "Admin" && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            className="flex items-center px-4 py-2 text-white rounded-lg transition"
+            style={{
+              backgroundColor: darkMode ? 'rgb(29, 78, 216)' : 'rgb(37, 99, 235)',
+            }}
+            onMouseEnter={(e) => e.target.style.backgroundColor = darkMode ? 'rgb(37, 99, 235)' : 'rgb(29, 78, 216)'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = darkMode ? 'rgb(29, 78, 216)' : 'rgb(37, 99, 235)'}
           >
             <Plus className="w-5 h-5 mr-2" />
             Nuevo Tablero
@@ -135,9 +151,14 @@ const Tableros = () => {
       </div>
 
       {/* Barra de búsqueda y filtros */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div 
+        className="rounded-lg shadow p-4 mb-6"
+        style={{
+          backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white'
+        }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2">
+          <div className="md:col-span-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -145,7 +166,12 @@ const Tableros = () => {
                 placeholder="Buscar tarjetas..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  borderColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)',
+                  backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                  color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+                }}
               />
             </div>
           </div>
@@ -168,7 +194,7 @@ const Tableros = () => {
         </div>
 
         {(searchTerm || estadoFilter) && (
-          <div className="mt-3 text-sm text-gray-600">
+          <div className="mt-3 text-sm" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(75, 85, 99)' }}>
             Mostrando {tarjetasFiltradas.length} de {tarjetas.length} tarjetas
           </div>
         )}
@@ -178,16 +204,21 @@ const Tableros = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {tableros.map((tablero) => (
           <Link key={tablero.id} href={`/tableros/${tablero.id}`}>
-            <a
-              className="block bg-white rounded-lg shadow hover:shadow-xl transition p-6 border-l-4"
-              style={{ borderLeftColor: tablero.color }}
+            <div
+              className="block rounded-lg shadow hover:shadow-xl transition p-6 border-l-4 cursor-pointer"
+              style={{ 
+                borderLeftColor: tablero.color,
+                backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white'
+              }}
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-1">
+                  <h2 className="text-xl font-bold mb-1" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                     {tablero.titulo}
                   </h2>
-                  <p className="text-sm text-gray-600">{tablero.descripcion}</p>
+                  <p className="text-sm" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(75, 85, 99)' }}>
+                    {tablero.descripcion}
+                  </p>
                 </div>
                 <div
                   className="w-12 h-12 rounded"
@@ -195,7 +226,7 @@ const Tableros = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>
                 <span>{tablero.listas.length} listas</span>
                 <span>
                   {tablero.listas.reduce(
@@ -205,7 +236,7 @@ const Tableros = () => {
                   tarjetas
                 </span>
               </div>
-            </a>
+            </div>
           </Link>
         ))}
       </div>
@@ -214,7 +245,14 @@ const Tableros = () => {
       {tarjetasFiltradas.length > 0 && (
         <div>
           <section className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 
+              className="text-2xl font-bold mb-4 px-4 py-2 rounded-lg" 
+              style={{ 
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)',
+                backgroundColor: darkMode ? 'rgba(31, 41, 55, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)'
+              }}
+            >
               {searchTerm || estadoFilter
                 ? "Resultados de búsqueda"
                 : "Todas las Tarjetas"}
@@ -223,11 +261,28 @@ const Tableros = () => {
               {/* Botón de ordenamiento por fecha */}
               <button
                 onClick={toggleSortOrder}
-                className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition ${
-                  sortOrder
-                    ? "bg-blue-50 border-blue-500 text-blue-700"
-                    : "border-gray-300 text-gray-600 hover:bg-gray-50"
-                }`}
+                className="flex items-center gap-2 px-4 py-2 border rounded-lg transition"
+                style={{
+                  backgroundColor: sortOrder
+                    ? (darkMode ? 'rgb(30, 58, 138)' : 'rgb(239, 246, 255)')
+                    : (darkMode ? 'rgb(31, 41, 55)' : 'white'),
+                  borderColor: sortOrder
+                    ? 'rgb(59, 130, 246)'
+                    : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                  color: sortOrder
+                    ? (darkMode ? 'rgb(147, 197, 253)' : 'rgb(29, 78, 216)')
+                    : (darkMode ? 'rgb(156, 163, 175)' : 'rgb(75, 85, 99)')
+                }}
+                onMouseEnter={(e) => {
+                  if (!sortOrder) {
+                    e.target.style.backgroundColor = darkMode ? 'rgb(55, 65, 81)' : 'rgb(249, 250, 251)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!sortOrder) {
+                    e.target.style.backgroundColor = darkMode ? 'rgb(31, 41, 55)' : 'white';
+                  }
+                }}
                 title={
                   sortOrder === "asc"
                     ? "Ordenar por fecha: Más antiguos primero"
@@ -258,7 +313,12 @@ const Tableros = () => {
                 <select
                   value={estadoFilter}
                   onChange={(e) => setEstadoFilter(e.target.value)}
-                  className="w-50 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                  className="w-50 pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                  style={{
+                    borderColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)',
+                    backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                    color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+                  }}
                 >
                   <option value="">Todos los estados</option>
                   <option value="Todo">Por Hacer</option>
@@ -278,7 +338,7 @@ const Tableros = () => {
 
       {tarjetasFiltradas.length === 0 && (searchTerm || estadoFilter) && (
         <div className="text-center py-12">
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             No se encontraron tarjetas con los filtros aplicados
           </p>
         </div>

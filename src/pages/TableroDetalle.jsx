@@ -8,6 +8,7 @@ import Modal from "../components/Modal";
 import ListaForm from "../components/ListaForm";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
+import { useThemeStore } from "../store/themeStore";
 
 const TableroDetalle = () => {
   const [, params] = useRoute("/tableros/:id");
@@ -18,6 +19,7 @@ const TableroDetalle = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creatingLista, setCreatingLista] = useState(false);
   const { user } = useAuthStore();
+  const { darkMode } = useThemeStore();
 
   useEffect(() => {
     if (params?.id) {
@@ -110,36 +112,36 @@ const TableroDetalle = () => {
         destination.index
       );
     } catch (err) {
-      console.error("Error al mover tarjeta:", err);
       // Recargar el tablero si hay error
       loadTablero(params.id);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="bg-white shadow">
+    <div className="min-h-screen" style={{ backgroundColor: darkMode ? 'rgb(17, 24, 39)' : 'rgb(243, 244, 246)' }}>
+      <div className="shadow" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
         <div className="container mx-auto px-4 py-4">
           <button
             onClick={() => setLocation("/tableros")}
-            className="flex items-center text-blue-600 hover:text-blue-800 mb-2"
+            className="flex items-center mb-2"
+            style={{ color: darkMode ? 'rgb(96, 165, 250)' : 'rgb(37, 99, 235)' }}
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             Volver
           </button>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">
+              <h1 className="text-2xl font-bold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                 {tablero.titulo}
               </h1>
-              <p className="text-gray-600">{tablero.descripcion}</p>
+              <p style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)' }}>{tablero.descripcion}</p>
             </div>
             {user?.rol === "Admin" && (
               <Link href="/admin/tarjetas/new">
-                <a className="flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                <div className="flex items-center px-4 py-2 rounded" style={{ backgroundColor: 'rgb(37, 99, 235)', color: 'white' }}>
                   <Plus className="w-4 h-4 mr-1" />
                   Nueva Tarjeta
-                </a>
+                </div>
               </Link>
             )}
           </div>
@@ -152,11 +154,12 @@ const TableroDetalle = () => {
             {tablero.listas.map((lista) => (
               <div
                 key={lista.id}
-                className="flex-shrink-0 w-80 bg-gray-200 rounded-lg p-4"
+                className="flex-shrink-0 w-80 rounded-lg p-4"
+                style={{ backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)' }}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-bold text-gray-800">{lista.titulo}</h2>
-                  <span className="bg-gray-400 text-white px-2 py-1 rounded text-sm">
+                  <h2 className="font-bold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>{lista.titulo}</h2>
+                  <span className="px-2 py-1 rounded text-sm" style={{ backgroundColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(156, 163, 175)', color: 'white' }}>
                     {lista.tarjetas.length}
                   </span>
                 </div>
@@ -166,9 +169,12 @@ const TableroDetalle = () => {
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className={`space-y-3 min-h-[100px] ${
-                        snapshot.isDraggingOver ? "bg-gray-300" : ""
-                      } rounded p-2 transition-colors`}
+                      className={`space-y-3 min-h-[100px] rounded p-2 transition-colors`}
+                      style={{
+                        backgroundColor: snapshot.isDraggingOver 
+                          ? (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)')
+                          : 'transparent'
+                      }}
                     >
                       {lista.tarjetas.map((tarjeta, index) => (
                         <Draggable
@@ -186,28 +192,29 @@ const TableroDetalle = () => {
                               }`}
                             >
                               <Link href={`/tarjetas/${tarjeta.id}`}>
-                                <a
-                                  className={`block bg-white rounded shadow hover:shadow-md transition p-3 ${getPrioridadColor(
+                                <div
+                                  className={`block rounded shadow hover:shadow-md transition p-3 ${getPrioridadColor(
                                     tarjeta.prioridad
                                   )}`}
+                                  style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}
                                 >
-                                  <h3 className="font-semibold text-gray-800 mb-1">
+                                  <h3 className="font-semibold mb-1" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                                     {tarjeta.titulo}
                                   </h3>
                                   {tarjeta.descripcion && (
-                                    <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                                    <p className="text-sm line-clamp-2 mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)' }}>
                                       {tarjeta.descripcion}
                                     </p>
                                   )}
-                                  <div className="flex items-center justify-between text-xs text-gray-500">
-                                    <span className="bg-gray-100 px-2 py-1 rounded">
+                                  <div className="flex items-center justify-between text-xs" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>
+                                    <span className="px-2 py-1 rounded" style={{ backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)' }}>
                                       {tarjeta.prioridad}
                                     </span>
                                     {tarjeta.nombreAsignado && (
                                       <span>{tarjeta.nombreAsignado}</span>
                                     )}
                                   </div>
-                                </a>
+                                </div>
                               </Link>
                             </div>
                           )}
@@ -216,7 +223,7 @@ const TableroDetalle = () => {
                       {provided.placeholder}
 
                       {lista.tarjetas.length === 0 && (
-                        <p className="text-center text-gray-500 text-sm py-4">
+                        <p className="text-center text-sm py-4" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>
                           No hay tarjetas
                         </p>
                       )}
@@ -231,7 +238,11 @@ const TableroDetalle = () => {
               <div className="flex-shrink-0 w-80">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className="w-full bg-gray-200 hover:bg-gray-300 rounded-lg p-4 flex items-center justify-center text-gray-600 hover:text-gray-800 transition"
+                  className="w-full rounded-lg p-4 flex items-center justify-center transition"
+                  style={{
+                    backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)',
+                    color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(75, 85, 99)'
+                  }}
                 >
                   <Plus className="w-5 h-5 mr-2" />
                   Agregar Lista

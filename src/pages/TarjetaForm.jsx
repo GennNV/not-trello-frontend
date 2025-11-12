@@ -7,6 +7,7 @@ import { tarjetasService } from "../services/tarjetasService";
 import { tablerosService } from "../services/tablerosService";
 import { tarjetaSchema } from "../schemas/tarjetaSchema";
 import { Save, X } from "lucide-react";
+import { useThemeStore } from "../store/themeStore";
 
 const TarjetaForm = () => {
   const [, setLocation] = useLocation();
@@ -15,6 +16,7 @@ const TarjetaForm = () => {
   const [listas, setListas] = useState([]);
   const [error, setError] = useState("");
   const isEdit = !!params?.id;
+  const { darkMode } = useThemeStore();
 
   const {
     register,
@@ -40,7 +42,7 @@ const TarjetaForm = () => {
       );
       setListas(allListas);
     } catch (err) {
-      console.error("Error al cargar listas:", err);
+      // Error silencioso
     }
   };
 
@@ -95,28 +97,37 @@ const TarjetaForm = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <div className="max-w-2xl mx-auto rounded-lg shadow-lg p-8" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
+        <h1 className="text-3xl font-bold mb-6" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
           {isEdit ? "Editar Tarjeta" : "Nueva Tarjeta"}
         </h1>
 
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="mb-4 border px-4 py-3 rounded" style={{ 
+            backgroundColor: darkMode ? 'rgb(127, 29, 29)' : 'rgb(254, 242, 242)',
+            borderColor: darkMode ? 'rgb(185, 28, 28)' : 'rgb(254, 202, 202)',
+            color: darkMode ? 'rgb(252, 165, 165)' : 'rgb(185, 28, 28)'
+          }}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               Título *
             </label>
             <input
               type="text"
               {...register("titulo")}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.titulo ? "border-red-500" : "border-gray-300"
+                errors.titulo ? "border-red-500" : ""
               }`}
+              style={{
+                backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                borderColor: errors.titulo ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+              }}
               placeholder="Título de la tarjeta"
             />
             {errors.titulo && (
@@ -127,15 +138,20 @@ const TarjetaForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               Descripción
             </label>
             <textarea
               {...register("descripcion")}
               rows={4}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.descripcion ? "border-red-500" : "border-gray-300"
+                errors.descripcion ? "border-red-500" : ""
               }`}
+              style={{
+                backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                borderColor: errors.descripcion ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+              }}
               placeholder="Descripción detallada de la tarjeta"
             />
             {errors.descripcion && (
@@ -147,14 +163,19 @@ const TarjetaForm = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
                 Prioridad *
               </label>
               <select
                 {...register("prioridad")}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.prioridad ? "border-red-500" : "border-gray-300"
+                  errors.prioridad ? "border-red-500" : ""
                 }`}
+                style={{
+                  backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                  borderColor: errors.prioridad ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                  color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+                }}
               >
                 <option value="Baja">Baja</option>
                 <option value="Media">Media</option>
@@ -168,14 +189,19 @@ const TarjetaForm = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
                 Lista *
               </label>
               <select
                 {...register("listaId", { valueAsNumber: true })}
                 className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.listaId ? "border-red-500" : "border-gray-300"
+                  errors.listaId ? "border-red-500" : ""
                 }`}
+                style={{
+                  backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                  borderColor: errors.listaId ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                  color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+                }}
               >
                 <option value="">Seleccionar lista</option>
                 {listas.map((lista) => (
@@ -193,13 +219,18 @@ const TarjetaForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               Fecha de Vencimiento
             </label>
             <input
               type="date"
               {...register("fechaVencimiento")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              style={{
+                backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                borderColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)',
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+              }}
             />
           </div>
 
@@ -207,7 +238,8 @@ const TarjetaForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: 'rgb(37, 99, 235)', color: 'white' }}
             >
               <Save className="w-5 h-5 mr-2" />
               {loading
@@ -220,7 +252,11 @@ const TarjetaForm = () => {
             <button
               type="button"
               onClick={() => setLocation("/tableros")}
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center"
+              className="px-6 py-3 rounded-lg font-semibold transition flex items-center"
+              style={{
+                backgroundColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(229, 231, 235)',
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(55, 65, 81)'
+              }}
             >
               <X className="w-5 h-5 mr-2" />
               Cancelar

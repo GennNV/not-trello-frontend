@@ -15,11 +15,13 @@ import {
   Cell,
 } from "recharts";
 import { Users, Layout, CheckSquare, TrendingUp } from "lucide-react";
+import { useThemeStore } from "../store/themeStore";
 
 const AdminPanel = () => {
   const [estadisticas, setEstadisticas] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { darkMode } = useThemeStore();
 
   useEffect(() => {
     loadEstadisticas();
@@ -65,17 +67,17 @@ const AdminPanel = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">
+      <h1 className="text-3xl font-bold mb-8" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
         Panel de Administración
       </h1>
 
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="rounded-lg shadow-lg p-6" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Usuarios</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-sm" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>Total Usuarios</p>
+              <p className="text-3xl font-bold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                 {estadisticas.totalUsuarios}
               </p>
             </div>
@@ -83,11 +85,11 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="rounded-lg shadow-lg p-6" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Tableros</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-sm" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>Total Tableros</p>
+              <p className="text-3xl font-bold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                 {estadisticas.totalTableros}
               </p>
             </div>
@@ -95,11 +97,11 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="rounded-lg shadow-lg p-6" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Tarjetas</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-sm" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>Total Tarjetas</p>
+              <p className="text-3xl font-bold" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
                 {estadisticas.totalTarjetas}
               </p>
             </div>
@@ -110,8 +112,8 @@ const AdminPanel = () => {
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <div className="rounded-lg shadow-lg p-6" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
+          <h2 className="text-xl font-bold mb-4" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
             Tarjetas por Estado
           </h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -126,8 +128,8 @@ const AdminPanel = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <div className="rounded-lg shadow-lg p-6" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
+          <h2 className="text-xl font-bold mb-4" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
             Tarjetas por Prioridad
           </h2>
           <ResponsiveContainer width="100%" height={300}>
