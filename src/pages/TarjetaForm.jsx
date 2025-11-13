@@ -229,7 +229,6 @@ const TarjetaForm = () => {
                 value={selectedTableroId}
                 onChange={handleTableroChange}
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white"
-                disabled={isEdit}
               >
                 <option value="">Seleccionar tablero</option>
                 {tableros.map((tablero) => (
@@ -267,14 +266,12 @@ const TarjetaForm = () => {
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white ${
                 errors.listaId ? "border-red-500" : "border-gray-300 dark:border-gray-600"
               }`}
-              disabled={!selectedTableroId || listas.length === 0}
+              disabled={listas.length === 0}
             >
               <option value="">
-                {selectedTableroId
-                  ? listas.length === 0
-                    ? "No hay listas en este tablero"
-                    : "Seleccionar lista"
-                  : "Primero selecciona un tablero"}
+                {listas.length === 0
+                  ? "No hay listas en este tablero"
+                  : "Seleccionar lista"}
               </option>
               {listas.map((lista) => (
                 <option key={lista.id} value={lista.id}>
