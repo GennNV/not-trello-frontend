@@ -1,32 +1,40 @@
 import React from "react";
 import { Link } from "wouter";
 import { Calendar, User, AlertCircle } from "lucide-react";
+import { useThemeStore } from "../store/themeStore";
 
 const TarjetaCard = ({ tarjeta }) => {
-  const getPrioridadColor = (prioridad) => {
-    switch (prioridad) {
-      case "Alta":
-        return "bg-red-100 text-red-800";
-      case "Media":
-        return "bg-yellow-100 text-yellow-800";
-      case "Baja":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const { darkMode } = useThemeStore();
+
+  const getPrioridadStyle = (prioridad) => {
+    const styles = {
+      Alta: {
+        backgroundColor: darkMode ? 'rgb(127, 29, 29)' : 'rgb(254, 226, 226)',
+        color: darkMode ? 'rgb(254, 202, 202)' : 'rgb(153, 27, 27)'
+      },
+      Media: {
+        backgroundColor: darkMode ? 'rgb(113, 63, 18)' : 'rgb(254, 249, 195)',
+        color: darkMode ? 'rgb(254, 240, 138)' : 'rgb(133, 77, 14)'
+      },
+      Baja: {
+        backgroundColor: darkMode ? 'rgb(20, 83, 45)' : 'rgb(220, 252, 231)',
+        color: darkMode ? 'rgb(134, 239, 172)' : 'rgb(22, 101, 52)'
+      },
+      default: {
+        backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)',
+        color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+      }
+    };
+    return styles[prioridad] || styles.default;
   };
 
-  const getEstadoBgColor = (estado) => {
-    switch (estado) {
-      case "Todo":
-        return "bg-gray-100";
-      case "InProgress":
-        return "bg-yellow-100";
-      case "Done":
-        return "bg-green-100";
-      default:
-        return "bg-gray-100";
-    }
+  const getEstadoBgStyle = (estado) => {
+    const styles = {
+      Todo: { backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(243, 244, 246)' },
+      InProgress: { backgroundColor: darkMode ? 'rgb(113, 63, 18)' : 'rgb(254, 249, 195)' },
+      Done: { backgroundColor: darkMode ? 'rgb(20, 83, 45)' : 'rgb(220, 252, 231)' },
+    };
+    return styles[estado] || styles.Todo;
   };
 
   const getEstadoTexto = (estado) => {
@@ -45,30 +53,35 @@ const TarjetaCard = ({ tarjeta }) => {
   const isVencida =
     tarjeta.fechaVencimiento && new Date(tarjeta.fechaVencimiento) < new Date();
 
+  const cardStyle = {
+    backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white',
+    borderColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)',
+    color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+  };
+
   return (
     <Link href={`/tarjetas/${tarjeta.id}`}>
-      <a className="block bg-white rounded-lg shadow hover:shadow-lg hover:-translate-y-1 transition-all duration-200 border border-gray-200 overflow-hidden cursor-pointer">
+      <div className="block rounded-lg shadow hover:shadow-lg transition border overflow-hidden cursor-pointer" style={cardStyle}>
         <div className="p-4">
           <div className="flex items-start justify-between mb-2">
-            <h3 className="font-semibold text-gray-800 flex-1">
+            <h3 className="font-semibold flex-1" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
               {tarjeta.titulo}
             </h3>
             <span
-              className={`text-xs px-2 py-1 rounded ${getPrioridadColor(
-                tarjeta.prioridad
-              )}`}
+              className="text-xs px-2 py-1 rounded"
+              style={getPrioridadStyle(tarjeta.prioridad)}
             >
               {tarjeta.prioridad}
             </span>
           </div>
 
           {tarjeta.descripcion && (
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+            <p className="text-sm mb-3 line-clamp-2" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(75, 85, 99)' }}>
               {tarjeta.descripcion}
             </p>
           )}
 
-          <div className="flex flex-col space-y-2 text-xs text-gray-500">
+          <div className="flex flex-col space-y-2 text-xs" style={{ color: darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)' }}>
             {/* Fecha de creación */}
             {tarjeta.fechaCreacion && (
               <div className="flex items-center space-x-1">
@@ -83,9 +96,12 @@ const TarjetaCard = ({ tarjeta }) => {
             {/* Fecha de vencimiento */}
             {tarjeta.fechaVencimiento && (
               <div
-                className={`flex items-center space-x-1 ${
-                  isVencida ? "text-red-600" : ""
-                }`}
+                className="flex items-center space-x-1"
+                style={{
+                  color: isVencida 
+                    ? (darkMode ? 'rgb(248, 113, 113)' : 'rgb(220, 38, 38)')
+                    : (darkMode ? 'rgb(156, 163, 175)' : 'rgb(107, 114, 128)')
+                }}
               >
                 <Calendar className="w-3 h-3" />
                 <span className="font-medium">Vencimiento:</span>
@@ -106,16 +122,18 @@ const TarjetaCard = ({ tarjeta }) => {
           </div>
         </div>
 
-        <div
-          className={`px-4 py-2 border-t border-gray-200 ${getEstadoBgColor(
-            tarjeta.estado
-          )}`}
+        <div 
+          className="px-4 py-2 border-t" 
+          style={{
+            ...getEstadoBgStyle(tarjeta.estado),
+            borderColor: darkMode ? 'rgb(55, 65, 81)' : 'rgb(229, 231, 235)'
+          }}
         >
-          <span className="text-xs text-gray-700 font-medium">
+          <span className="text-xs font-medium" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(55, 65, 81)' }}>
             {getEstadoTexto(tarjeta.estado)}
           </span>
         </div>
-      </a>
+      </div>
     </Link>
   );
 };

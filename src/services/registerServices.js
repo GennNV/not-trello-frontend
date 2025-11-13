@@ -36,7 +36,6 @@ export const registerService = {
       const data = await response.json();
       return data.exists;
     } catch (error) {
-      console.error("Error verificando email:", error);
       return false;
     }
   },
@@ -51,7 +50,6 @@ export const registerService = {
       const data = await response.json();
       return data.exists;
     } catch (error) {
-      console.error("Error verificando username:", error);
       return false;
     }
   },
