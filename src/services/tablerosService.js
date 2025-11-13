@@ -61,7 +61,7 @@ export const tablerosService = {
 
   async deleteLista(listaId) {
     try {
-      await api.delete(`/listas/${listaId}`);
+      await api.delete(`tableros/${listaId}/listas/delete`);
       return true;
     } catch (error) {
       throw error.response?.data?.message || "Error al eliminar lista";
