@@ -65,17 +65,17 @@ const AdminPanel = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-8">
         Panel de Administración
       </h1>
 
       {/* Tarjetas de resumen */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Usuarios</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Usuarios</p>
+              <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
                 {estadisticas.totalUsuarios}
               </p>
             </div>
@@ -83,11 +83,11 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Tableros</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Tableros</p>
+              <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
                 {estadisticas.totalTableros}
               </p>
             </div>
@@ -95,11 +95,11 @@ const AdminPanel = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm">Total Tarjetas</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Total Tarjetas</p>
+              <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
                 {estadisticas.totalTarjetas}
               </p>
             </div>
@@ -110,8 +110,8 @@ const AdminPanel = () => {
 
       {/* Gráficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
             Tarjetas por Estado
           </h2>
           <ResponsiveContainer width="100%" height={300}>
@@ -126,8 +126,8 @@ const AdminPanel = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
             Tarjetas por Prioridad
           </h2>
           <ResponsiveContainer width="100%" height={300}>

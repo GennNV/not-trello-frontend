@@ -169,8 +169,8 @@ const TarjetaForm = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-200">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
           {isEdit ? "Editar Tarjeta" : "Nueva Tarjeta"}
         </h1>
 
@@ -182,14 +182,14 @@ const TarjetaForm = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Título *
             </label>
             <input
               type="text"
               {...register("titulo")}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.titulo ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white ${
+                errors.titulo ? "border-red-500" : "border-gray-300 dark:border-gray-600"
               }`}
               placeholder="Título de la tarjeta"
             />
@@ -201,14 +201,14 @@ const TarjetaForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Descripción
             </label>
             <textarea
               {...register("descripcion")}
               rows={4}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.descripcion ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white ${
+                errors.descripcion ? "border-red-500" : "border-gray-300 dark:border-gray-600"
               }`}
               placeholder="Descripción detallada de la tarjeta"
             />
@@ -222,13 +222,13 @@ const TarjetaForm = () => {
           {/* Selector de Tablero - Solo si NO viene desde un tablero específico */}
           {!comesFromTablero && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Tablero *
               </label>
               <select
                 value={selectedTableroId}
                 onChange={handleTableroChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white"
                 disabled={isEdit}
               >
                 <option value="">Seleccionar tablero</option>
@@ -248,8 +248,8 @@ const TarjetaForm = () => {
 
           {/* Si viene desde un tablero, mostrar info del tablero */}
           {comesFromTablero && selectedTableroId && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-gray-700">
+            <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-semibold">Tablero:</span>{" "}
                 {tableros.find((t) => t.id.toString() === selectedTableroId)
                   ?.titulo || "Cargando..."}
@@ -259,13 +259,13 @@ const TarjetaForm = () => {
 
           {/* Selector de Lista */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Lista *
             </label>
             <select
               {...register("listaId", { valueAsNumber: true })}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.listaId ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white ${
+                errors.listaId ? "border-red-500" : "border-gray-300 dark:border-gray-600"
               }`}
               disabled={!selectedTableroId || listas.length === 0}
             >
@@ -290,13 +290,13 @@ const TarjetaForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Prioridad *
             </label>
             <select
               {...register("prioridad")}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.prioridad ? "border-red-500" : "border-gray-300"
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white ${
+                errors.prioridad ? "border-red-500" : "border-gray-300 dark:border-gray-600"
               }`}
             >
               <option value="Baja">Baja</option>
@@ -311,13 +311,13 @@ const TarjetaForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Fecha de Vencimiento
             </label>
             <input
               type="date"
               {...register("fechaVencimiento")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white"
             />
           </div>
 
@@ -344,7 +344,7 @@ const TarjetaForm = () => {
                     : "/tableros"
                 )
               }
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center cursor-pointer"
+              className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition flex items-center cursor-pointer"
             >
               <X className="w-5 h-5 mr-2" />
               Cancelar

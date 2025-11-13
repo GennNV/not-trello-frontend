@@ -159,7 +159,7 @@ const Tableros = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Mis Tableros</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Mis Tableros</h1>
         {user?.rol === "Admin" && (
           <button
             onClick={() => setIsModalOpen(true)}
@@ -172,7 +172,7 @@ const Tableros = () => {
       </div>
 
       {/* Barra de búsqueda y filtros */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6 transition-colors duration-200">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2">
             <div className="relative">
@@ -182,7 +182,7 @@ const Tableros = () => {
                 placeholder="Buscar tarjetas..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white"
               />
             </div>
           </div>
@@ -205,7 +205,7 @@ const Tableros = () => {
         </div>
 
         {(searchTerm || estadoFilter) && (
-          <div className="mt-3 text-sm text-gray-600">
+          <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
             Mostrando {tarjetasFiltradas.length} de {tarjetas.length} tarjetas
           </div>
         )}
@@ -215,8 +215,8 @@ const Tableros = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {tableros.map((tablero) => (
           <Link key={tablero.id} href={`/tableros/${tablero.id}`}>
-            <a
-              className="block bg-white rounded-lg shadow hover:shadow-xl transition p-6 border-l-4 relative group cursor-pointer"
+            <div
+              className="block bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-xl transition p-6 border-l-4 relative group cursor-pointer"
               style={{ borderLeftColor: tablero.color }}
             >
               {/* Botón de eliminar - solo visible en hover y para Admin */}
@@ -233,10 +233,10 @@ const Tableros = () => {
 
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-1">
+                  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-1">
                     {tablero.titulo}
                   </h2>
-                  <p className="text-sm text-gray-600">{tablero.descripcion}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{tablero.descripcion}</p>
                 </div>
                 <div
                   className="w-12 h-12 rounded"
@@ -244,7 +244,7 @@ const Tableros = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                 <span>{tablero.listas.length} listas</span>
                 <span>
                   {tablero.listas.reduce(
@@ -254,7 +254,7 @@ const Tableros = () => {
                   tarjetas
                 </span>
               </div>
-            </a>
+            </div>
           </Link>
         ))}
       </div>
@@ -263,7 +263,7 @@ const Tableros = () => {
       {tarjetasFiltradas.length > 0 && (
         <div>
           <section className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
               {searchTerm || estadoFilter
                 ? "Resultados de búsqueda"
                 : "Todas las Tarjetas"}
@@ -274,8 +274,8 @@ const Tableros = () => {
                 onClick={toggleSortOrder}
                 className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition cursor-pointer ${
                   sortOrder
-                    ? "bg-blue-50 border-blue-500 text-blue-700"
-                    : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                    ? "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-700 dark:text-blue-300"
+                    : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                 }`}
                 title={
                   sortOrder === "asc"
@@ -307,7 +307,7 @@ const Tableros = () => {
                 <select
                   value={estadoFilter}
                   onChange={(e) => setEstadoFilter(e.target.value)}
-                  className="w-50 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                  className="w-50 pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white dark:bg-gray-700 dark:text-white"
                 >
                   <option value="">Todos los estados</option>
                   <option value="Todo">Por Hacer</option>
@@ -327,7 +327,7 @@ const Tableros = () => {
 
       {tarjetasFiltradas.length === 0 && (searchTerm || estadoFilter) && (
         <div className="text-center py-12">
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             No se encontraron tarjetas con los filtros aplicados
           </p>
         </div>

@@ -73,13 +73,13 @@ const TarjetaDetalle = () => {
   const getPrioridadColor = (prioridad) => {
     switch (prioridad) {
       case "Alta":
-        return "bg-red-500";
+        return "bg-red-500 dark:bg-red-600";
       case "Media":
-        return "bg-yellow-500";
+        return "bg-yellow-500 dark:bg-yellow-600";
       case "Baja":
-        return "bg-green-500";
+        return "bg-green-500 dark:bg-green-600";
       default:
-        return "bg-gray-500";
+        return "bg-gray-500 dark:bg-gray-600";
     }
   };
 
@@ -89,19 +89,19 @@ const TarjetaDetalle = () => {
         onClick={() =>
           setLocation(tableroId ? `/tableros/${tableroId}` : "/tableros")
         }
-        className="flex items-center text-blue-600 hover:text-blue-800 mb-6 cursor-pointer"
+        className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-6 cursor-pointer transition-colors"
       >
         <ArrowLeft className="w-4 h-4 mr-1" />
         {tableroId ? "Volver al tablero" : "Volver a tableros"}
       </button>
 
-      <div className="bg-white rounded-lg shadow-lg p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-200">
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               {tarjeta.titulo}
             </h1>
-            <p className="text-gray-600">En lista: {tarjeta.nombreLista}</p>
+            <p className="text-gray-600 dark:text-gray-400">En lista: {tarjeta.nombreLista}</p>
           </div>
 
           <div className="flex items-center space-x-2">
@@ -116,14 +116,14 @@ const TarjetaDetalle = () => {
               <>
                 <button
                   onClick={handleEdit}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded transition cursor-pointer"
+                  className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900 rounded transition cursor-pointer"
                   title="Editar tarjeta"
                 >
                   <Edit className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setShowDeleteModal(true)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded transition cursor-pointer"
+                  className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded transition cursor-pointer"
                   title="Eliminar tarjeta"
                 >
                   <Trash2 className="w-5 h-5" />
@@ -135,10 +135,10 @@ const TarjetaDetalle = () => {
 
         <div className="space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
               Descripción
             </h2>
-            <p className="text-gray-700 whitespace-pre-wrap">
+            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
               {tarjeta.descripcion || "Sin descripción"}
             </p>
           </div>
@@ -146,12 +146,12 @@ const TarjetaDetalle = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {tarjeta.fechaVencimiento && (
               <div className="flex items-start space-x-3">
-                <Calendar className="w-5 h-5 text-gray-400 mt-1" />
+                <Calendar className="w-5 h-5 text-gray-400 dark:text-gray-500 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-gray-800">
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                     Fecha de vencimiento
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
                     {new Date(tarjeta.fechaVencimiento).toLocaleDateString(
                       "es-ES",
                       {
