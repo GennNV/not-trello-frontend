@@ -28,4 +28,9 @@ export const tarjetaSchema = z.object({
     .nullable()
     .transform((val) => (val ? new Date(val).toISOString() : null)),
   asignadoAId: z.number().int().positive().optional().nullable(),
+  estado: z
+    .enum(["Todo", "In Progress", "Done"], {
+      errorMap: () => ({ message: "Seleccione un estado válido" }),
+    })
+    .default("Todo"),
 });

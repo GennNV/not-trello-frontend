@@ -115,6 +115,7 @@ const TarjetaForm = () => {
       setValue("descripcion", tarjeta.descripcion);
       setValue("prioridad", tarjeta.prioridad);
       setValue("listaId", tarjeta.listaId);
+      setValue("estado", tarjeta.estado);
       if (tarjeta.fechaVencimiento) {
         setValue("fechaVencimiento", tarjeta.fechaVencimiento.split("T")[0]);
       }
@@ -140,6 +141,7 @@ const TarjetaForm = () => {
         titulo: data.titulo,
         descripcion: data.descripcion || "",
         prioridad: data.prioridad,
+        estado: data.estado || "Todo",
         listaId: parseInt(data.listaId),
         fechaVencimiento: data.fechaVencimiento || null,
         asignadoAId: data.asignadoAId ? parseInt(data.asignadoAId) : null,
@@ -255,7 +257,24 @@ const TarjetaForm = () => {
               </p>
             </div>
           )}
-
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Estado *
+            </label>
+            <select
+              {...register("estado")}
+              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white ${
+                errors.estado ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+              }`}
+            >
+              <option value="Todo">Todo</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </select>
+            {errors.estado && (
+              <p className="mt-1 text-sm text-red-600">{errors.estado.message}</p>
+            )}
+          </div>
           {/* Selector de Lista */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
