@@ -19,13 +19,13 @@ const ListaForm = ({ onSubmit, onCancel, loading }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Título */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Título de la lista *
         </label>
         <input
           type="text"
           {...register("titulo")}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white"
           placeholder="Ej: Por Hacer, En Progreso, Completado..."
           autoFocus
         />
@@ -39,7 +39,7 @@ const ListaForm = ({ onSubmit, onCancel, loading }) => {
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition cursor-pointer"
+          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
           disabled={loading}
         >
           Cancelar

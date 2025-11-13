@@ -62,11 +62,11 @@ const TableroDetalle = () => {
   const getPrioridadColor = (prioridad) => {
     switch (prioridad) {
       case "Alta":
-        return "border-l-4 border-red-500";
+        return "border-l-4 border-red-500 dark:border-red-400";
       case "Media":
-        return "border-l-4 border-yellow-500";
+        return "border-l-4 border-yellow-500 dark:border-yellow-400";
       case "Baja":
-        return "border-l-4 border-green-500";
+        return "border-l-4 border-green-500 dark:border-green-400";
       default:
         return "";
     }
@@ -192,22 +192,22 @@ const TableroDetalle = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="bg-white shadow">
+    <div className="min-h-screen transition-colors duration-200">
+      <div className="bg-white dark:bg-gray-800 shadow transition-colors duration-200">
         <div className="container mx-auto px-4 py-4">
           <button
             onClick={() => setLocation("/tableros")}
-            className="flex items-center text-blue-600 hover:text-blue-800 mb-2 cursor-pointer"
+            className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-2 cursor-pointer transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
             Volver
           </button>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
                 {tablero.titulo}
               </h1>
-              <p className="text-gray-600">{tablero.descripcion}</p>
+              <p className="text-gray-600 dark:text-gray-400">{tablero.descripcion}</p>
             </div>
             {user?.rol === "Admin" && (
               <div className="flex gap-3">
@@ -257,7 +257,7 @@ const TableroDetalle = () => {
                           snapshotLista.isDragging ? "opacity-70" : ""
                         }`}
                       >
-                        <div className="bg-gray-200 rounded-lg p-4 relative group">
+                        <div className="bg-gray-200 dark:bg-gray-700 rounded-lg p-4 relative group transition-colors duration-200">
                           {/* Botón de eliminar lista - solo visible en hover y para Admin */}
                           {user?.rol === "Admin" && (
                             <button
@@ -274,10 +274,10 @@ const TableroDetalle = () => {
                             {...providedLista.dragHandleProps}
                             className="flex items-center justify-between mb-4 cursor-move"
                           >
-                            <h2 className="font-bold text-gray-800">
+                            <h2 className="font-bold text-gray-800 dark:text-gray-100">
                               {lista.titulo}
                             </h2>
-                            <span className="bg-gray-400 text-white px-2 py-1 rounded text-sm">
+                            <span className="bg-gray-400 dark:bg-gray-600 text-white px-2 py-1 rounded text-sm">
                               {lista.tarjetas.length}
                             </span>
                           </div>
@@ -291,7 +291,7 @@ const TableroDetalle = () => {
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
                                 className={`space-y-3 min-h-[100px] ${
-                                  snapshot.isDraggingOver ? "bg-gray-300" : ""
+                                  snapshot.isDraggingOver ? "bg-gray-300 dark:bg-gray-600" : ""
                                 } rounded p-2 transition-colors`}
                               >
                                 {lista.tarjetas.map((tarjeta, index) => (
@@ -315,20 +315,20 @@ const TableroDetalle = () => {
                                           href={`/tarjetas/${tarjeta.id}?tableroId=${tablero.id}`}
                                         >
                                           <a
-                                            className={`block bg-white rounded shadow hover:shadow-md hover:-translate-y-1 transition-all duration-200 p-3 cursor-pointer ${getPrioridadColor(
+                                            className={`block bg-white dark:bg-gray-800 rounded shadow hover:shadow-md hover:-translate-y-1 transition-all duration-200 p-3 cursor-pointer ${getPrioridadColor(
                                               tarjeta.prioridad
                                             )}`}
                                           >
-                                            <h3 className="font-semibold text-gray-800 mb-1">
+                                            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
                                               {tarjeta.titulo}
                                             </h3>
                                             {tarjeta.descripcion && (
-                                              <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                                              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2">
                                                 {tarjeta.descripcion}
                                               </p>
                                             )}
-                                            <div className="flex items-center justify-between text-xs text-gray-500">
-                                              <span className="bg-gray-100 px-2 py-1 rounded">
+                                            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                              <span className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
                                                 {tarjeta.prioridad}
                                               </span>
                                               {tarjeta.nombreAsignado && (
@@ -346,7 +346,7 @@ const TableroDetalle = () => {
                                 {provided.placeholder}
 
                                 {lista.tarjetas.length === 0 && (
-                                  <p className="text-center text-gray-500 text-sm py-4">
+                                  <p className="text-center text-gray-500 dark:text-gray-400 text-sm py-4">
                                     No hay tarjetas
                                   </p>
                                 )}
