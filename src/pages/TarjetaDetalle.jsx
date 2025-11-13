@@ -167,19 +167,19 @@ const TarjetaDetalle = () => {
 
             {tarjeta.nombreAsignado && (
               <div className="flex items-start space-x-3">
-                <User className="w-5 h-5 text-gray-400 mt-1" />
+                <User className="w-5 h-5 text-gray-400 dark:text-gray-500 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-gray-800">Asignado a</h3>
-                  <p className="text-gray-600">{tarjeta.nombreAsignado}</p>
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-100">Asignado a</h3>
+                  <p className="text-gray-600 dark:text-gray-400">{tarjeta.nombreAsignado}</p>
                 </div>
               </div>
             )}
 
             <div className="flex items-start space-x-3">
-              <Tag className="w-5 h-5 text-gray-400 mt-1" />
+              <Tag className="w-5 h-5 text-gray-400 dark:text-gray-500 mt-1" />
               <div>
-                <h3 className="font-semibold text-gray-800">Estado</h3>
-                <p className="text-gray-600">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">Estado</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   {tarjeta.estado === "Todo" && "Por Hacer"}
                   {tarjeta.estado === "InProgress" && "En Progreso"}
                   {tarjeta.estado === "Done" && "Completado"}
@@ -188,12 +188,12 @@ const TarjetaDetalle = () => {
             </div>
 
             <div className="flex items-start space-x-3">
-              <Calendar className="w-5 h-5 text-gray-400 mt-1" />
+              <Calendar className="w-5 h-5 text-gray-400 dark:text-gray-500 mt-1" />
               <div>
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                   Fecha de creación
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-600 dark:text-gray-400">
                   {new Date(tarjeta.fechaCreacion).toLocaleDateString("es-ES")}
                 </p>
               </div>
