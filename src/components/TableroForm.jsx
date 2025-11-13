@@ -99,7 +99,7 @@ const TableroForm = ({ onSubmit, onCancel, loading }) => {
               key={color}
               type="button"
               onClick={() => handleColorChange(color)}
-              className={`w-10 h-10 rounded-lg transition-all ${
+              className={`w-10 h-10 rounded-lg transition-all cursor-pointer ${
                 colorSeleccionado === color
                   ? "ring-2 ring-offset-2 ring-blue-500 scale-110"
                   : "hover:scale-105"
@@ -128,7 +128,7 @@ const TableroForm = ({ onSubmit, onCancel, loading }) => {
         </button>
         <button
           type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 cursor-pointer"
           disabled={loading}
         >
           {loading ? "Creando..." : "Crear Tablero"}

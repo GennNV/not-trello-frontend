@@ -1,9 +1,11 @@
-import React from "react";
 import { Redirect } from "wouter";
 import { useAuthStore } from "../store/authStore";
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { isAuthenticated, user } = useAuthStore();
+
+  console.log(isAuthenticated)
+  console.log(user)
 
   if (!isAuthenticated) {
     return <Redirect to="/login" />;

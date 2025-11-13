@@ -49,3 +49,6 @@ dist/
 *.sqlite
 *.mdf
 *.ldf
+
+# Variables de entorno
+.env.*

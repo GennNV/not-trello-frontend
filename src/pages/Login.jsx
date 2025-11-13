@@ -27,7 +27,7 @@ const Login = () => {
 
     try {
       const response = await authService.login(data.email, data.password);
-      login(response.usuario, response.token);
+      login(response.user, response.token);
       setLocation("/tableros");
     } catch (err) {
       setError(err || "Error al iniciar sesión");
@@ -43,7 +43,7 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
             <LogIn className="w-8 h-8 text-blue-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">TrelloClone</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Not-Trello</h1>
           <p className="text-gray-600 mt-2">Inicia sesión para continuar</p>
         </div>
 
@@ -123,7 +123,7 @@ const Login = () => {
             )}
           </button>
         </form>
-            <div className="mt-6 text-center">
+        <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             ¿No tienes una cuenta?{" "}
             <button

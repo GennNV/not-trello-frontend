@@ -19,17 +19,14 @@ const TableroDetalle = lazy(() => import("./pages/TableroDetalle"));
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 
 function App() {
-  const { isAuthenticated } = useAuthStore();
-  const { darkMode } = useThemeStore();
-  const { backgroundImage } = useBackgroundStore();
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  const { isAuthenticated, login } = useAuthStore();
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      login(JSON.parse(user), token);
     }
-  }, [darkMode]);
+  }, [login]);
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>

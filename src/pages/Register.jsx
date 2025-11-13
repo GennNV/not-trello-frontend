@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation } from "wouter";
-import {registerService } from "../services/registerServices"
+import { registerService } from "../services/registerServices";
 import { registerSchema } from "../schemas/registerSchema";
 import { UserPlus, AlertCircle, Eye, EyeOff } from "lucide-react";
 
@@ -26,12 +26,13 @@ const Register = () => {
     setError("");
 
     try {
-      const response = await registerService.register(
+      await registerService.register(
         data.email,
         data.username,
-        data.password
+        data.password,
+        data.confirmPassword
       );
-      
+
       // Redirigir al login después del registro exitoso
       setLocation("/login");
     } catch (err) {
@@ -48,7 +49,7 @@ const Register = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
             <UserPlus className="w-8 h-8 text-blue-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">TrelloClone</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Not-Trello</h1>
           <p className="text-gray-600 mt-2">Crea tu cuenta para comenzar</p>
         </div>
 

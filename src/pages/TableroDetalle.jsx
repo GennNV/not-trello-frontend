@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useLocation, Link } from "wouter";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import toast from "react-hot-toast";
 import { tablerosService } from "../services/tablerosService";
 import { tarjetasService } from "../services/tarjetasService";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Modal from "../components/Modal";
 import ListaForm from "../components/ListaForm";
-import { ArrowLeft, Plus } from "lucide-react";
+import ConfirmModal from "../components/ConfirmModal";
+import { ArrowLeft, Plus, X } from "lucide-react";
 import { useAuthStore } from "../store/authStore";
 import { useThemeStore } from "../store/themeStore";
 
@@ -18,6 +20,8 @@ const TableroDetalle = () => {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creatingLista, setCreatingLista] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [listaToDelete, setListaToDelete] = useState(null);
   const { user } = useAuthStore();
   const { darkMode } = useThemeStore();
 
@@ -31,6 +35,17 @@ const TableroDetalle = () => {
     try {
       setLoading(true);
       const data = await tablerosService.getById(id);
+
+      // 🔍 DEBUG
+      console.log("=== TABLERO CARGADO ===");
+      console.log("Tablero completo:", data);
+      console.log("Tiene listas?:", data.listas);
+      console.log("Cantidad de listas:", data.listas?.length);
+      if (data.listas?.length > 0) {
+        console.log("Primera lista:", data.listas[0]);
+        console.log("Tarjetas de primera lista:", data.listas[0].tarjetas);
+      }
+      console.log("=====================");
       setTablero(data);
     } catch (err) {
       setError(err);
@@ -63,17 +78,50 @@ const TableroDetalle = () => {
     try {
       setCreatingLista(true);
       await tablerosService.createLista(params.id, data);
+      toast.success("Lista creada correctamente");
       setIsModalOpen(false);
       await loadTablero(params.id);
     } catch (err) {
+      toast.error("Error al crear la lista");
       setError(err);
     } finally {
       setCreatingLista(false);
     }
   };
 
+  const handleDeleteClick = (e, lista) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Verificar si la lista tiene tarjetas
+    if (lista.tarjetas && lista.tarjetas.length > 0) {
+      toast.error(
+        "No es posible eliminar una lista con tarjetas. Elimina primero todas las tarjetas."
+      );
+      return;
+    }
+
+    setListaToDelete(lista);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!listaToDelete) return;
+
+    try {
+      await tablerosService.deleteLista(listaToDelete.id);
+      toast.success("Lista eliminada correctamente");
+      await loadTablero(params.id);
+    } catch (err) {
+      toast.error("Error al eliminar la lista");
+      console.error(err);
+    } finally {
+      setListaToDelete(null);
+    }
+  };
+
   const onDragEnd = async (result) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, type } = result;
 
     // Si no hay destino o se soltó en el mismo lugar
     if (!destination) return;
@@ -84,7 +132,34 @@ const TableroDetalle = () => {
       return;
     }
 
-    // Crear una copia del tablero para actualizar localmente
+    // Manejar drag and drop de LISTAS
+    if (type === "lista") {
+      const newTablero = { ...tablero };
+      const listasReordenadas = Array.from(newTablero.listas);
+
+      // Remover la lista de su posición original
+      const [listaMovida] = listasReordenadas.splice(source.index, 1);
+
+      // Insertar la lista en su nueva posición
+      listasReordenadas.splice(destination.index, 0, listaMovida);
+
+      // Actualizar el estado local inmediatamente para mejor UX
+      setTablero({ ...newTablero, listas: listasReordenadas });
+
+      // Enviar actualización al backend
+      try {
+        const listaIds = listasReordenadas.map((lista) => lista.id);
+        await tablerosService.reorderListas(params.id, listaIds);
+      } catch (err) {
+        console.error("Error al reordenar listas:", err);
+        // Si hay error, recargar el tablero para restaurar el orden original
+        loadTablero(params.id);
+      }
+
+      return;
+    }
+
+    // Manejar drag and drop de TARJETAS (código original)
     const newTablero = { ...tablero };
     const sourceLista = newTablero.listas.find(
       (l) => l.id.toString() === source.droppableId
@@ -150,8 +225,12 @@ const TableroDetalle = () => {
 
       <div className="container mx-auto px-4 py-6">
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex space-x-4 overflow-x-auto pb-4">
-            {tablero.listas.map((lista) => (
+          <Droppable
+            droppableId="all-listas"
+            direction="horizontal"
+            type="lista"
+          >
+            {(provided) => (
               <div
                 key={lista.id}
                 className="flex-shrink-0 w-80 rounded-lg p-4"
@@ -249,7 +328,7 @@ const TableroDetalle = () => {
                 </button>
               </div>
             )}
-          </div>
+          </Droppable>
         </DragDropContext>
       </div>
 
@@ -265,6 +344,20 @@ const TableroDetalle = () => {
           loading={creatingLista}
         />
       </Modal>
+
+      {/* Modal de confirmación para eliminar lista */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setListaToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        title="Eliminar Lista"
+        message={`¿Estás seguro de que deseas eliminar la lista "${listaToDelete?.titulo}"? Esta acción eliminará todas las tarjetas contenidas en la lista y no se puede deshacer.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+      />
     </div>
   );
 };

@@ -1,7 +1,15 @@
 import React from "react";
 import { AlertTriangle, X } from "lucide-react";
 
-const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, confirmText = "Confirmar", cancelText = "Cancelar" }) => {
+const ConfirmModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmText = "Confirmar",
+  cancelText = "Cancelar",
+}) => {
   if (!isOpen) return null;
 
   return (

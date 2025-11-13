@@ -9,6 +9,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import TarjetaCard from "../components/TarjetaCard";
 import Modal from "../components/Modal";
 import TableroForm from "../components/TableroForm";
+import ConfirmModal from "../components/ConfirmModal";
 import {
   Search,
   Plus,
@@ -16,6 +17,7 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  X,
 } from "lucide-react";
 
 const Tableros = () => {
@@ -32,6 +34,10 @@ const Tableros = () => {
   // Estados para el modal de crear tablero
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creatingTablero, setCreatingTablero] = useState(false);
+
+  // Estados para el modal de eliminar tablero
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [tableroToDelete, setTableroToDelete] = useState(null);
 
   const { tarjetas, setTarjetas } = useTarjetasStore();
   const { user } = useAuthStore();
@@ -70,6 +76,37 @@ const Tableros = () => {
       setError(err);
     } finally {
       setCreatingTablero(false);
+    }
+  };
+
+  const handleDeleteClick = (e, tablero) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Verificar si el tablero tiene listas
+    if (tablero.listas && tablero.listas.length > 0) {
+      toast.error(
+        "No es posible eliminar un tablero con listas. Elimina primero todas las listas."
+      );
+      return;
+    }
+
+    setTableroToDelete(tablero);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!tableroToDelete) return;
+
+    try {
+      await tablerosService.delete(tableroToDelete.id);
+      toast.success("Tablero eliminado correctamente");
+      await loadTableros();
+    } catch (err) {
+      toast.error("Error al eliminar el tablero");
+      console.error(err);
+    } finally {
+      setTableroToDelete(null);
     }
   };
 
@@ -211,6 +248,18 @@ const Tableros = () => {
                 backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white'
               }}
             >
+              {/* Botón de eliminar - solo visible en hover y para Admin */}
+              {user?.rol === "Admin" && (
+                <button
+                  onClick={(e) => handleDeleteClick(e, tablero)}
+                  className="absolute top-0 left-0 flex items-center gap-1 px-3 py-1.5 bg-red-500/90 hover:bg-red-600 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 cursor-pointer"
+                  title="Eliminar tablero"
+                >
+                  <X className="w-3 h-3" />
+                  <span>Eliminar</span>
+                </button>
+              )}
+
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h2 className="text-xl font-bold mb-1" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
@@ -356,6 +405,20 @@ const Tableros = () => {
           loading={creatingTablero}
         />
       </Modal>
+
+      {/* Modal de confirmación para eliminar tablero */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setTableroToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        title="Eliminar Tablero"
+        message={`¿Estás seguro de que deseas eliminar el tablero "${tableroToDelete?.titulo}"? Esta acción eliminará todas las listas y tarjetas asociadas y no se puede deshacer.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+      />
     </div>
   );
 };

@@ -31,13 +31,16 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
-            <Link href="/" className="flex items-center space-x-2 text-xl font-bold">
+            <Link
+              href="/"
+              className="flex items-center space-x-2 text-xl font-bold cursor-pointer hover:opacity-80 transition"
+            >
               <LayoutDashboard className="w-6 h-6" />
-              <span>TrelloClone</span>
+              <span>Not-Trello</span>
             </Link>
 
             <div className="flex space-x-4">
-              <Link 
+              <Link
                 href="/tableros"
                 className={`flex items-center space-x-1 px-3 py-2 rounded ${hoverBtnStyle} transition ${
                   location === "/tableros" ? activeBtnStyle : ""
@@ -48,7 +51,7 @@ const Navbar = () => {
               </Link>
 
               {user?.rol === "Admin" && (
-                <Link 
+                <Link
                   href="/admin"
                   className={`flex items-center space-x-1 px-3 py-2 rounded ${hoverBtnStyle} transition ${
                     location === "/admin" ? activeBtnStyle : ""
