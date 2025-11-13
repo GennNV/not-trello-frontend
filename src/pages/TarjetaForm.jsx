@@ -7,17 +7,16 @@ import { tarjetasService } from "../services/tarjetasService";
 import { tablerosService } from "../services/tablerosService";
 import { tarjetaSchema } from "../schemas/tarjetaSchema";
 import { Save, X } from "lucide-react";
+import { useThemeStore } from "../store/themeStore";
 
 const TarjetaForm = () => {
-  const [, setLocation] = useLocation(); // Solo usamos setLocation para redirigir
+  const [, setLocation] = useLocation();
   const [, params] = useRoute("/admin/tarjetas/:id/edit");
   const [loading, setLoading] = useState(false);
   const [listas, setListas] = useState([]);
-  const [tableros, setTableros] = useState([]);
-  const [selectedTableroId, setSelectedTableroId] = useState("");
   const [error, setError] = useState("");
-  const [comesFromTablero, setComesFromTablero] = useState(false);
   const isEdit = !!params?.id;
+  const { darkMode } = useThemeStore();
 
   const {
     register,
@@ -29,82 +28,21 @@ const TarjetaForm = () => {
   });
 
   useEffect(() => {
-    // Uso window.location.search para obtener los query parameters porque wouter me lo rompia!!!!
-    const urlParams = new URLSearchParams(window.location.search);
-    const tableroId = urlParams.get("tableroId");
-
-    console.log("🔍 URL completa:", window.location.href);
-    console.log("🔍 Query string:", window.location.search);
-    console.log("🔍 tableroId del query string:", tableroId);
-
-    if (tableroId) {
-      console.log("✅ Viene desde un tablero, ID:", tableroId);
-      setSelectedTableroId(tableroId);
-      setComesFromTablero(true); // Indica que viene desde un tablero específico
-    } else {
-      console.log("❌ No viene desde un tablero específico");
-    }
-
-    loadTableros();
-
+    loadListas();
     if (isEdit) {
       loadTarjeta(params.id);
     }
   }, []);
 
-  useEffect(() => {
-    if (selectedTableroId && tableros.length > 0) {
-      filterListasByTablero(selectedTableroId);
-    }
-  }, [selectedTableroId, tableros]);
-
-  const loadTableros = async () => {
+  const loadListas = async () => {
     try {
-      const data = await tablerosService.getAll();
-      setTableros(data);
-
-      // Si ya hay un tablero seleccionado, filtrar sus listas usando los datos recién cargados
-      if (selectedTableroId) {
-        const tablero = data.find(
-          (t) => t.id.toString() === selectedTableroId.toString()
-        );
-        if (tablero) {
-          const listasDelTablero = tablero.listas.map((l) => ({
-            id: l.id,
-            titulo: l.titulo,
-          }));
-          setListas(listasDelTablero);
-        }
-      }
+      const tableros = await tablerosService.getAll();
+      const allListas = tableros.flatMap((t) =>
+        t.listas.map((l) => ({ id: l.id, titulo: `${t.titulo} - ${l.titulo}` }))
+      );
+      setListas(allListas);
     } catch (err) {
-      console.error("Error al cargar tableros:", err);
-    }
-  };
-
-  const filterListasByTablero = (tableroId) => {
-    const tablero = tableros.find(
-      (t) => t.id.toString() === tableroId.toString()
-    );
-    if (tablero) {
-      const listasDelTablero = tablero.listas.map((l) => ({
-        id: l.id,
-        titulo: l.titulo,
-      }));
-      setListas(listasDelTablero);
-    }
-  };
-
-  const handleTableroChange = (e) => {
-    const tableroId = e.target.value;
-    setSelectedTableroId(tableroId);
-
-    if (tableroId) {
-      filterListasByTablero(tableroId);
-      // Limpiar la lista seleccionada cuando cambias de tablero
-      setValue("listaId", "");
-    } else {
-      setListas([]);
-      setValue("listaId", "");
+      // Error silencioso
     }
   };
 
@@ -120,11 +58,6 @@ const TarjetaForm = () => {
       }
       if (tarjeta.asignadoAId) {
         setValue("asignadoAId", tarjeta.asignadoAId);
-      }
-
-      // Encontrar el tablero que contiene esta lista para preseleccionarlo
-      if (tarjeta.tableroId) {
-        setSelectedTableroId(tarjeta.tableroId.toString());
       }
     } catch (err) {
       setError(err);
@@ -153,14 +86,9 @@ const TarjetaForm = () => {
         toast.success("Tarjeta creada correctamente");
       }
 
-      // Volver al tablero específico si venimos de uno, sino a la lista de tableros
-      setLocation(
-        selectedTableroId ? `/tableros/${selectedTableroId}` : "/tableros"
-      );
+      setLocation("/tableros");
     } catch (err) {
-      toast.error(
-        isEdit ? "Error al actualizar la tarjeta" : "Error al crear la tarjeta"
-      );
+      toast.error(isEdit ? "Error al actualizar la tarjeta" : "Error al crear la tarjeta");
       setError(err);
     } finally {
       setLoading(false);
@@ -169,28 +97,37 @@ const TarjetaForm = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <div className="max-w-2xl mx-auto rounded-lg shadow-lg p-8" style={{ backgroundColor: darkMode ? 'rgb(31, 41, 55)' : 'white' }}>
+        <h1 className="text-3xl font-bold mb-6" style={{ color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)' }}>
           {isEdit ? "Editar Tarjeta" : "Nueva Tarjeta"}
         </h1>
 
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="mb-4 border px-4 py-3 rounded" style={{ 
+            backgroundColor: darkMode ? 'rgb(127, 29, 29)' : 'rgb(254, 242, 242)',
+            borderColor: darkMode ? 'rgb(185, 28, 28)' : 'rgb(254, 202, 202)',
+            color: darkMode ? 'rgb(252, 165, 165)' : 'rgb(185, 28, 28)'
+          }}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               Título *
             </label>
             <input
               type="text"
               {...register("titulo")}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.titulo ? "border-red-500" : "border-gray-300"
+                errors.titulo ? "border-red-500" : ""
               }`}
+              style={{
+                backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                borderColor: errors.titulo ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+              }}
               placeholder="Título de la tarjeta"
             />
             {errors.titulo && (
@@ -201,15 +138,20 @@ const TarjetaForm = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               Descripción
             </label>
             <textarea
               {...register("descripcion")}
               rows={4}
               className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.descripcion ? "border-red-500" : "border-gray-300"
+                errors.descripcion ? "border-red-500" : ""
               }`}
+              style={{
+                backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                borderColor: errors.descripcion ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+              }}
               placeholder="Descripción detallada de la tarjeta"
             />
             {errors.descripcion && (
@@ -219,105 +161,76 @@ const TarjetaForm = () => {
             )}
           </div>
 
-          {/* Selector de Tablero - Solo si NO viene desde un tablero específico */}
-          {!comesFromTablero && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tablero *
+              <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
+                Prioridad *
               </label>
               <select
-                value={selectedTableroId}
-                onChange={handleTableroChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                disabled={isEdit}
+                {...register("prioridad")}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.prioridad ? "border-red-500" : ""
+                }`}
+                style={{
+                  backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                  borderColor: errors.prioridad ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                  color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+                }}
               >
-                <option value="">Seleccionar tablero</option>
-                {tableros.map((tablero) => (
-                  <option key={tablero.id} value={tablero.id}>
-                    {tablero.titulo}
-                  </option>
-                ))}
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
               </select>
-              {!selectedTableroId && !isEdit && (
-                <p className="mt-1 text-sm text-gray-500">
-                  Primero selecciona un tablero
+              {errors.prioridad && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.prioridad.message}
                 </p>
               )}
             </div>
-          )}
 
-          {/* Si viene desde un tablero, mostrar info del tablero */}
-          {comesFromTablero && selectedTableroId && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm text-gray-700">
-                <span className="font-semibold">Tablero:</span>{" "}
-                {tableros.find((t) => t.id.toString() === selectedTableroId)
-                  ?.titulo || "Cargando..."}
-              </p>
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
+                Lista *
+              </label>
+              <select
+                {...register("listaId", { valueAsNumber: true })}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.listaId ? "border-red-500" : ""
+                }`}
+                style={{
+                  backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                  borderColor: errors.listaId ? 'rgb(239, 68, 68)' : (darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)'),
+                  color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+                }}
+              >
+                <option value="">Seleccionar lista</option>
+                {listas.map((lista) => (
+                  <option key={lista.id} value={lista.id}>
+                    {lista.titulo}
+                  </option>
+                ))}
+              </select>
+              {errors.listaId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.listaId.message}
+                </p>
+              )}
             </div>
-          )}
-
-          {/* Selector de Lista */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Lista *
-            </label>
-            <select
-              {...register("listaId", { valueAsNumber: true })}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.listaId ? "border-red-500" : "border-gray-300"
-              }`}
-              disabled={!selectedTableroId || listas.length === 0}
-            >
-              <option value="">
-                {selectedTableroId
-                  ? listas.length === 0
-                    ? "No hay listas en este tablero"
-                    : "Seleccionar lista"
-                  : "Primero selecciona un tablero"}
-              </option>
-              {listas.map((lista) => (
-                <option key={lista.id} value={lista.id}>
-                  {lista.titulo}
-                </option>
-              ))}
-            </select>
-            {errors.listaId && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.listaId.message}
-              </p>
-            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Prioridad *
-            </label>
-            <select
-              {...register("prioridad")}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.prioridad ? "border-red-500" : "border-gray-300"
-              }`}
-            >
-              <option value="Baja">Baja</option>
-              <option value="Media">Media</option>
-              <option value="Alta">Alta</option>
-            </select>
-            {errors.prioridad && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.prioridad.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2" style={{ color: darkMode ? 'rgb(209, 213, 219)' : 'rgb(55, 65, 81)' }}>
               Fecha de Vencimiento
             </label>
             <input
               type="date"
               {...register("fechaVencimiento")}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              style={{
+                backgroundColor: darkMode ? 'rgb(55, 65, 81)' : 'white',
+                borderColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(209, 213, 219)',
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(31, 41, 55)'
+              }}
             />
           </div>
 
@@ -325,7 +238,8 @@ const TarjetaForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="flex-1 flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: 'rgb(37, 99, 235)', color: 'white' }}
             >
               <Save className="w-5 h-5 mr-2" />
               {loading
@@ -337,14 +251,12 @@ const TarjetaForm = () => {
 
             <button
               type="button"
-              onClick={() =>
-                setLocation(
-                  selectedTableroId
-                    ? `/tableros/${selectedTableroId}`
-                    : "/tableros"
-                )
-              }
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition flex items-center cursor-pointer"
+              onClick={() => setLocation("/tableros")}
+              className="px-6 py-3 rounded-lg font-semibold transition flex items-center"
+              style={{
+                backgroundColor: darkMode ? 'rgb(75, 85, 99)' : 'rgb(229, 231, 235)',
+                color: darkMode ? 'rgb(229, 231, 235)' : 'rgb(55, 65, 81)'
+              }}
             >
               <X className="w-5 h-5 mr-2" />
               Cancelar
